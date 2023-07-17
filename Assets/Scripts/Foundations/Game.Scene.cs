@@ -72,8 +72,6 @@ namespace Elysia
                     _subScenes.RemoveAt(idx);
                 }
             }
-
-            Debug.Log($"{scene.name}({scene.handle}) unloaded");
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -95,8 +93,6 @@ namespace Elysia
 
             Scene = CreateScene<MainSceneBase>(next.name);
             Scene.Initialize(next.handle);
-
-            Debug.Log($"OnActiveSceneChanged : {next.name}({next.handle})");
         }
 
         private T CreateScene<T>(string sceneName) where T : SceneBase
@@ -117,8 +113,6 @@ namespace Elysia
 
             while (!op.isDone)
             {
-                Debug.Log($"Scene('{sceneName}') loading in progress : {Mathf.RoundToInt(op.progress * 100)}%");
-
                 yield return null;
             }
         }
@@ -129,8 +123,6 @@ namespace Elysia
 
             while (!op.isDone)
             {
-                Debug.Log($"Scene('{scene.name}') unloading in progress : {Mathf.RoundToInt(op.progress * 100)}%");
-
                 yield return null;
             }
         }
