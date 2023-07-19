@@ -8,7 +8,7 @@ namespace Elysia.Inputs
     public class InputManager : MonoBehaviour
     {
         public delegate void OnAxisEvent(float value);
-        public delegate void OnKeyEvent();
+        public delegate void OnKeyEvent(EModifier modifier);
 
         private class AxisValue
         {
@@ -100,14 +100,16 @@ namespace Elysia.Inputs
                         eventValue.tapCount = 0;
                     }
 
-                    eventValue.events[(int)EInputType.Pressed]?.Invoke();
+                    EModifier modifier = GetModifier();
+                    eventValue.events[(int)EInputType.Pressed]?.Invoke(modifier);
                 }
                 else
                 {
                     bool isHolding = Input.GetKey(keyCode);
                     if (isHolding)
                     {
-                        eventValue.events[(int)EInputType.Holding]?.Invoke();
+                        EModifier modifier = GetModifier();
+                        eventValue.events[(int)EInputType.Holding]?.Invoke(modifier);
                     }
                     else if (eventValue.lastPressedTime > eventValue.lastReleasedTime)
                     {
@@ -121,7 +123,8 @@ namespace Elysia.Inputs
                             eventValue.tapCount = 0;
                         }
 
-                        eventValue.events[(int)EInputType.Released]?.Invoke();
+                        EModifier modifier = GetModifier();
+                        eventValue.events[(int)EInputType.Released]?.Invoke(modifier);
 
                         switch (eventValue.tapCount)
                         {
@@ -129,11 +132,11 @@ namespace Elysia.Inputs
                                 break;
 
                             case 1:
-                                eventValue.events[(int)EInputType.SingleTap]?.Invoke();
+                                eventValue.events[(int)EInputType.SingleTap]?.Invoke(modifier);
                                 break;
 
                             case 2:
-                                eventValue.events[(int)EInputType.DoubleTap]?.Invoke();
+                                eventValue.events[(int)EInputType.DoubleTap]?.Invoke(modifier);
                                 eventValue.tapCount = 0;
                                 break;
 
@@ -144,6 +147,28 @@ namespace Elysia.Inputs
                     }
                 }
             }
+        }
+
+        private EModifier GetModifier()
+        {
+            EModifier modifier = 0;
+
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            {
+                modifier |= EModifier.Ctrl;
+            }
+
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                modifier |= EModifier.Shift;
+            }
+
+            if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+            {
+                modifier |= EModifier.Alt;
+            }
+
+            return modifier;
         }
     }
 }

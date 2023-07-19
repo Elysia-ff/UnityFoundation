@@ -26,58 +26,36 @@ namespace Elysia.Scenes
         private void OnHorizontalInput(float value)
         {
             _axisInputs.x = value;
-            Debug.Log($"x : {value}");
-
-            if (value >= 1f)
-            {
-                Input.UnbindAxis("Horizontal", OnHorizontalInput);
-            }
         }
 
         private void OnVerticalInput(float value)
         {
             _axisInputs.y = value;
-            Debug.Log($"y : {value}");
-
-            if (value >= 1f)
-            {
-                Input.UnbindAxis("Vertical", OnVerticalInput);
-            }
         }
 
-        private void OnRPressed()
+        private void OnRPressed(EModifier modifier)
         {
-            Debug.Log("pressed");
-
-            Input.UnbindKey(KeyCode.R, EInputType.Pressed, OnRPressed);
+            Debug.Log($"pressed {modifier}");
         }
 
-        private void OnRHolding()
+        private void OnRHolding(EModifier modifier)
         {
-            Debug.Log("holding");
-
-            Input.UnbindKey(KeyCode.R, EInputType.Holding, OnRHolding);
+            Debug.Log($"holding {modifier}");
         }
 
-        private void OnRReleased()
+        private void OnRReleased(EModifier modifier)
         {
-            Debug.Log("released");
-
-            Input.UnbindKey(KeyCode.R, EInputType.Released, OnRReleased);
+            Debug.Log($"released {modifier}");
         }
 
-        private void OnRSingleTap()
+        private void OnRSingleTap(EModifier modifier)
         {
-            Debug.Log("single");
-
-            Input.UnbindKey(KeyCode.R, EInputType.SingleTap, OnRSingleTap);
+            Debug.Log($"single {modifier}");
         }
 
-        private void OnRDoubleTap()
+        private void OnRDoubleTap(EModifier modifier)
         {
-            Debug.Log("double");
-
-            Input.UnbindKey(KeyCode.R, EInputType.DoubleTap, OnRDoubleTap);
+            Debug.Log($"double {modifier}");
         }
     }
 }
