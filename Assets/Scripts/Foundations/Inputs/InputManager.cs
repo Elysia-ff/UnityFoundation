@@ -10,19 +10,19 @@ namespace Elysia.Inputs
         public delegate void OnAxisEvent(float value);
         public delegate void OnKeyEvent(EModifier modifier);
 
-        private class AxisValue
+        private class AxisEventValue
         {
             public OnAxisEvent events;
         }
 
-        private class EventValue
+        private class KeyEventValue
         {
             public float lastPressedTime;
             public float lastReleasedTime;
             public int tapCount;
             public OnKeyEvent[] events;
 
-            public EventValue()
+            public KeyEventValue()
             {
                 lastPressedTime = 0f;
                 lastReleasedTime = 0f;
@@ -31,17 +31,17 @@ namespace Elysia.Inputs
             }
         }
 
-        private readonly Dictionary<string, AxisValue> _axisEvents = new Dictionary<string, AxisValue>();
-        private readonly Dictionary<KeyCode, EventValue> _keyEvents = new Dictionary<KeyCode, EventValue>();
+        private readonly Dictionary<string, AxisEventValue> _axisEvents = new Dictionary<string, AxisEventValue>();
+        private readonly Dictionary<KeyCode, KeyEventValue> _keyEvents = new Dictionary<KeyCode, KeyEventValue>();
 
         private const float TAP_THRESHOLD = 0.2f;
         private const float DOUBLE_TAP_THRESHOLD = 0.2f;
 
         public void BindAxis(string axis, OnAxisEvent onAxisEvent)
         {
-            if (!_axisEvents.TryGetValue(axis, out AxisValue value))
+            if (!_axisEvents.TryGetValue(axis, out AxisEventValue value))
             {
-                value = new AxisValue();
+                value = new AxisEventValue();
                 _axisEvents.Add(axis, value);
             }
 
@@ -50,7 +50,7 @@ namespace Elysia.Inputs
 
         public void UnbindAxis(string axis, OnAxisEvent onAxisEvent)
         {
-            if (!_axisEvents.TryGetValue(axis, out AxisValue value))
+            if (!_axisEvents.TryGetValue(axis, out AxisEventValue value))
             {
                 return;
             }
@@ -60,9 +60,9 @@ namespace Elysia.Inputs
 
         public void BindKey(KeyCode key, EInputType inputType, OnKeyEvent onKeyEvent)
         {
-            if (!_keyEvents.TryGetValue(key, out EventValue value))
+            if (!_keyEvents.TryGetValue(key, out KeyEventValue value))
             {
-                value = new EventValue();
+                value = new KeyEventValue();
                 _keyEvents.Add(key, value);
             }
 
@@ -71,7 +71,7 @@ namespace Elysia.Inputs
 
         public void UnbindKey(KeyCode key, EInputType inputType, OnKeyEvent onKeyEvent)
         {
-            if (!_keyEvents.TryGetValue(key, out EventValue value))
+            if (!_keyEvents.TryGetValue(key, out KeyEventValue value))
             {
                 return;
             }
@@ -90,7 +90,7 @@ namespace Elysia.Inputs
             foreach (var kv in _keyEvents)
             {
                 KeyCode keyCode = kv.Key;
-                EventValue eventValue = kv.Value;
+                KeyEventValue eventValue = kv.Value;
 
                 if (Input.GetKeyDown(keyCode))
                 {
