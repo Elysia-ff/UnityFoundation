@@ -1,4 +1,5 @@
 using Elysia.Inputs;
+using Elysia.Pool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace Elysia.Scenes
     public class Level0 : MainSceneBase
     {
         private Vector2 _axisInputs = Vector2.zero;
+
+        private IObjectPool<Tester> _testerPool;
+        private Queue<PooledObject<Tester>> _testers = new Queue<PooledObject<Tester>>();
 
         public override void Initialize(int handle)
         {
@@ -28,6 +32,10 @@ namespace Elysia.Scenes
             Input.BindMouse(0, EInputType.Released, OnLMBReleased);
             Input.BindMouse(0, EInputType.SingleTap, OnLMBSingleTap);
             Input.BindMouse(0, EInputType.DoubleTap, OnLMBDoubleTap);
+
+            Input.BindMouse(1, EInputType.Pressed, OnRMBPressed);
+
+            _testerPool = new ObjectPool<Tester>(transform, () => new GameObject("dd").AddComponent<Tester>(), (t) => Debug.Log("take"), 3, 16, 5);
         }
 
         private void OnHorizontalInput(float value)
@@ -68,6 +76,8 @@ namespace Elysia.Scenes
         private void OnLMBPressed(Vector2 position, EModifier modifier)
         {
             Debug.Log($"pressed {position} {modifier}");
+
+            _testers.Enqueue(_testerPool.GetWrapper());
         }
 
         private void OnLMBHolding(Vector2 position, EModifier modifier)
@@ -88,6 +98,16 @@ namespace Elysia.Scenes
         private void OnLMBDoubleTap(Vector2 position, EModifier modifier)
         {
             Debug.Log($"double {position} {modifier}");
+        }
+
+        private void OnRMBPressed(Vector2 position, EModifier modifier)
+        {
+            Debug.Log($"pressed {position} {modifier}");
+
+            if (_testers.TryDequeue(out PooledObject<Tester> t))
+            {
+                t.ReturnToPool();
+            }
         }
     }
 }
