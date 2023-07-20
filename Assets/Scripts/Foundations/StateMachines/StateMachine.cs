@@ -5,15 +5,18 @@ using UnityEngine;
 
 namespace Elysia.StateMachines
 {
-    public class StateMachine<T> : IStateMachine<T> where T : unmanaged, Enum
+    public class StateMachine<T, TData> : IStateMachine<T> where T : unmanaged, Enum
     {
-        private IState<T> _state;
+        private IState<T, TData> _state;
 
-        public readonly Dictionary<T, IState<T>> _states = new Dictionary<T, IState<T>>();
+        public readonly Dictionary<T, IState<T, TData>> _states = new Dictionary<T, IState<T, TData>>();
 
-        public StateMachine<T> AddState<TState>(T stateType) where TState : IState<T>, new()
+        public StateMachine<T, TData> AddState<TState>(TData data) where TState : IState<T, TData>, new()
         {
-            _states.Add(stateType, new TState());
+            IState<T, TData> newState = new TState();
+            newState.Initialize(this, data);
+
+            _states.Add(newState.State, newState);
 
             return this;
         }
@@ -29,6 +32,16 @@ namespace Elysia.StateMachines
 
             _state = _states[stateType];
             _state.OnStart(prevState);
+        }
+
+        public void Update(float deltaTime)
+        {
+            if (_state == null)
+            {
+                return;
+            }
+
+            _state.OnUpdate(deltaTime);
         }
     }
 }

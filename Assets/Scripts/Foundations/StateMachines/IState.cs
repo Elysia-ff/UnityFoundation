@@ -5,15 +5,16 @@ using UnityEngine;
 
 namespace Elysia.StateMachines
 {
-    public interface IState<T> where T : unmanaged, Enum
+    public interface IState<T, TData>
+        where T : unmanaged, Enum
     {
         T State { get; }
 
-        void Initialize(IStateMachine<T> stateMachine);
+        void Initialize(IStateMachine<T> stateMachine, TData data);
 
         void OnStart(T prevState);
 
-        void OnUpdate();
+        void OnUpdate(float deltaTime);
 
         void OnEnd(T nextState);
     }
