@@ -16,19 +16,19 @@ public class ReturnState : StateBase<AIController.EState, StateData>
     {
         base.OnUpdate(deltaTime);
 
-        if (_data.IsTargetInFollowDistance())
+        if (Data.IsTargetInFollowDistance())
         {
-            _stateMachine.Transit(AIController.EState.Follow);
+            StateMachine.Transit(AIController.EState.Follow);
         }
         else
         {
-            Vector3 destination = _data.ReturnPosition;
-            _data.Transform.LookAt(destination);
-            _data.Transform.position = Vector3.MoveTowards(_data.Transform.position, destination, StateData.SPEED * deltaTime);
+            Vector3 destination = Data.ReturnPosition;
+            Data.Transform.LookAt(destination);
+            Data.Transform.position = Vector3.MoveTowards(Data.Transform.position, destination, StateData.SPEED * deltaTime);
 
-            if (_data.Transform.position == destination)
+            if (Data.Transform.position == destination)
             {
-                _stateMachine.Transit(AIController.EState.Idle);
+                StateMachine.Transit(AIController.EState.Idle);
             }
         }
     }

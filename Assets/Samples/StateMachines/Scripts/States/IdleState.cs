@@ -16,9 +16,9 @@ public class IdleState : StateBase<AIController.EState, StateData>
     {
         base.OnUpdate(deltaTime);
 
-        if (_data.IsTargetInFollowDistance())
+        if (Data.IsTargetInFollowDistance())
         {
-            _stateMachine.Transit(AIController.EState.Follow);
+            StateMachine.Transit(AIController.EState.Follow);
         }
     }
 

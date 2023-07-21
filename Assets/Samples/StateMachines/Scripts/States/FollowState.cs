@@ -16,22 +16,22 @@ public class FollowState : StateBase<AIController.EState, StateData>
     {
         base.OnUpdate(deltaTime);
 
-        bool bFound = _data.GetTarget(out Vector3 position);
+        bool bFound = Data.GetTarget(out Vector3 position);
         if (!bFound)
         {
-            _stateMachine.Transit(AIController.EState.Return);
+            StateMachine.Transit(AIController.EState.Return);
         }
         else
         {
-            float distance = (position - _data.Transform.position).sqrMagnitude;
+            float distance = (position - Data.Transform.position).sqrMagnitude;
             if (distance >= StateData.MAX_FOLLOW_DISTANCE)
             {
-                _stateMachine.Transit(AIController.EState.Return);
+                StateMachine.Transit(AIController.EState.Return);
             }
             else
             {
-                _data.Transform.LookAt(position);
-                _data.Transform.position = Vector3.MoveTowards(_data.Transform.position, position, StateData.SPEED * deltaTime);
+                Data.Transform.LookAt(position);
+                Data.Transform.position = Vector3.MoveTowards(Data.Transform.position, position, StateData.SPEED * deltaTime);
             }
         }
     }

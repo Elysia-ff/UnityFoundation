@@ -10,13 +10,13 @@ namespace Elysia.StateMachines
     {
         public abstract T State { get; }
 
-        protected IStateMachine<T> _stateMachine;
-        protected TData _data;
+        protected IStateMachine<T> StateMachine { get; private set; }
+        protected TData Data { get; private set; }
 
         public virtual void Initialize(IStateMachine<T> stateMachine, TData data)
         {
-            _stateMachine = stateMachine;
-            _data = data;
+            StateMachine = stateMachine;
+            Data = data;
         }
 
         public virtual void OnStart(T prevState)
