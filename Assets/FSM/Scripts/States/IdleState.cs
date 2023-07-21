@@ -1,8 +1,9 @@
+using Elysia.StateMachines;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleState : StateBase
+public class IdleState : StateBase<AIController.EState, StateData>
 {
     public override AIController.EState State => AIController.EState.Idle;
 

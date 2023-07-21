@@ -1,8 +1,9 @@
+using Elysia.StateMachines;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReturnState : StateBase
+public class ReturnState : StateBase<AIController.EState, StateData>
 {
     public override AIController.EState State => AIController.EState.Return;
 

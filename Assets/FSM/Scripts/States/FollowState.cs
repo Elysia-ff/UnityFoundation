@@ -1,8 +1,9 @@
+using Elysia.StateMachines;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowState : StateBase
+public class FollowState : StateBase<AIController.EState, StateData>
 {
     public override AIController.EState State => AIController.EState.Follow;
 

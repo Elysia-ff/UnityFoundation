@@ -7,13 +7,13 @@ namespace Elysia.StateMachines
 {
     public class StateMachine<T, TData> : IStateMachine<T> where T : unmanaged, Enum
     {
-        private IState<T, TData> _state;
+        private StateBase<T, TData> _state;
 
-        public readonly Dictionary<T, IState<T, TData>> _states = new Dictionary<T, IState<T, TData>>();
+        public readonly Dictionary<T, StateBase<T, TData>> _states = new Dictionary<T, StateBase<T, TData>>();
 
-        public StateMachine<T, TData> AddState<TState>(TData data) where TState : IState<T, TData>, new()
+        public StateMachine<T, TData> AddState<TState>(TData data) where TState : StateBase<T, TData>, new()
         {
-            IState<T, TData> newState = new TState();
+            StateBase<T, TData> newState = new TState();
             newState.Initialize(this, data);
 
             _states.Add(newState.State, newState);
