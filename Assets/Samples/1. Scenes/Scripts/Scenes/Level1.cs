@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Elysia.Scenes
 {
-    public class Level1 : MainSceneBase
+    public class Level1 : SampleSceneBase
     {
     }
 }
