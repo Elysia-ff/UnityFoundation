@@ -21,7 +21,6 @@ namespace Elysia.StateMachines
 
         public virtual void OnStart(T prevState)
         {
-            Debug.Log($"Start {State} ({prevState})");
         }
 
         public virtual void OnUpdate(float deltaTime)
@@ -30,7 +29,6 @@ namespace Elysia.StateMachines
 
         public virtual void OnEnd(T nextState)
         {
-            Debug.Log($"End {State} ({nextState})");
         }
     }
 }
