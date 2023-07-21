@@ -95,7 +95,8 @@ namespace Elysia
             Scene.Initialize(next.handle);
         }
 
-        private T CreateScene<T>(string sceneName) where T : SceneBase
+        private T CreateScene<T>(string sceneName)
+            where T : SceneBase
         {
             if (!SCENE_TABLE.TryGetValue(sceneName, out Type t))
             {

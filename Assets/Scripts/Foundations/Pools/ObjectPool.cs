@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace Elysia.Pool
 {
-    public class ObjectPool<T> : IObjectPool<T> where T : MonoBehaviour
+    public class ObjectPool<T> : IObjectPool<T>
+        where T : MonoBehaviour
     {
         public delegate T OnCreateNewEvent();
         public delegate void OnTakeFromPoolEvent(T item);

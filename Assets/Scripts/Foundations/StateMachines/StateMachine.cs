@@ -5,13 +5,15 @@ using UnityEngine;
 
 namespace Elysia.StateMachines
 {
-    public class StateMachine<T, TData> : IStateMachine<T> where T : unmanaged, Enum
+    public class StateMachine<T, TData> : IStateMachine<T>
+        where T : unmanaged, Enum
     {
         private StateBase<T, TData> _state;
 
         public readonly Dictionary<T, StateBase<T, TData>> _states = new Dictionary<T, StateBase<T, TData>>();
 
-        public StateMachine<T, TData> AddState<TState>(TData data) where TState : StateBase<T, TData>, new()
+        public StateMachine<T, TData> AddState<TState>(TData data)
+            where TState : StateBase<T, TData>, new()
         {
             StateBase<T, TData> newState = new TState();
             newState.Initialize(this, data);
