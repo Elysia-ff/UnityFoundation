@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 424394035}
   - component: {fileID: 424394034}
   - component: {fileID: 424394033}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +517,7 @@ GameObject:
   - component: {fileID: 1680927300}
   - component: {fileID: 1680927299}
   - component: {fileID: 1680927298}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

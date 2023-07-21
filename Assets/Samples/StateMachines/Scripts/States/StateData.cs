@@ -22,7 +22,7 @@ public class StateData
     {
         Ray ray = Game.Scene.MainCamera.ScreenPointToRay(Input.mousePosition);
 
-        int layerMask = 1 << LayerMask.NameToLayer("Ground");
+        int layerMask = 1 << LayerMask.NameToLayer("Default");
         if (!Physics.Raycast(ray, out RaycastHit hitInfo, float.PositiveInfinity, layerMask))
         {
             outPosition = Vector3.zero;
