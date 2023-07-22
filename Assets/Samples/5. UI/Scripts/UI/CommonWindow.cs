@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Elysia.UI
 {
-    public class StatusWindow : UIBase<StatusWindow>
+    public class CommonWindow : UIBase<CommonWindow>
     {
         [SerializeField] private RectTransform _pivot;
         [SerializeField] private Button _closeBtn;

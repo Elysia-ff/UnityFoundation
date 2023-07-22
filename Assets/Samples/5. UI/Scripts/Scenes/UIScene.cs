@@ -18,9 +18,9 @@ namespace Elysia.Scenes
             EPosition pos = (EPosition)positionValue;
             GUI.Label(new Rect(20, 60, Screen.width - 40, 30), $"EPosition : {pos}");
 
-            if (GUI.Button(new Rect(20, 100, Screen.width - 40, 60), "Show StatusUI"))
+            if (GUI.Button(new Rect(20, 100, Screen.width - 40, 60), $"Show {nameof(CommonWindow)}"))
             {
-                StatusWindow statusUI = Game.Scene.UI.ShowUI<StatusWindow>(pos);
+                CommonWindow statusUI = Game.Scene.UI.ShowUI<CommonWindow>(pos);
             }
         }
     }
