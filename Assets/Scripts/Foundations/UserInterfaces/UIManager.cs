@@ -111,6 +111,7 @@ namespace Elysia.UI
                 RaycastResult result = _raycastResults[0];
                 UIBase ui = result.gameObject.GetComponentInParent<UIBase>();
                 FocusUI(ui);
+                ui.OnPointerPressed();
 
                 if (result.gameObject.layer == _uiMoveLayer)
                 {
