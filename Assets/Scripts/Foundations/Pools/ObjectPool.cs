@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Elysia.Pool
+namespace Elysia.Pools
 {
     public class ObjectPool<T> : IObjectPool<T>
         where T : MonoBehaviour
