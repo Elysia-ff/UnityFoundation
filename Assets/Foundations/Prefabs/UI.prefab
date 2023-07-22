@@ -71,7 +71,7 @@ Transform:
   - {fileID: 5036354434442788543}
   - {fileID: 1518166070979636634}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &188177276440453324
 MonoBehaviour:
@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 5992550815959567156}
   - component: {fileID: 4790793976546013264}
   - component: {fileID: 3805602988495532433}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -563,7 +563,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 96
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
