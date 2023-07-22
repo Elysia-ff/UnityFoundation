@@ -14,7 +14,7 @@ namespace Elysia.UI
         [SerializeField] private TMP_Dropdown _positionDropdown;
         [SerializeField] private Button _showModalWindowBtn;
 
-        protected override Vector2 DeltaFromPivot => _pivot.localPosition;
+        protected override Vector2 Pivot => _pivot.localPosition;
 
         protected override void Initialize()
         {

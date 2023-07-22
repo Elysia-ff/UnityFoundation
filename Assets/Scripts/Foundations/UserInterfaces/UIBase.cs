@@ -22,7 +22,7 @@ namespace Elysia.UI
             set => _canvasGroup.alpha = value;
         }
 
-        protected virtual Vector2 DeltaFromPivot => Vector2.zero;
+        protected virtual Vector2 Pivot => Vector2.zero;
 
         protected virtual void Initialize()
         {
@@ -63,7 +63,7 @@ namespace Elysia.UI
             {
                 case EPosition.CenterOfScreen:
                     Vector2 centerOfScreen = Game.Scene.UI.ScreenPointToUIPosition(new Vector2(Screen.width / 2, Screen.height / 2));
-                    RectTransform.localPosition = centerOfScreen - DeltaFromPivot;
+                    RectTransform.localPosition = centerOfScreen - Pivot;
                     break;
 
                 case EPosition.CenterOfParent:
@@ -73,7 +73,7 @@ namespace Elysia.UI
                     }
 
                     Vector3 parentPosition = _parentUI.RectTransform.localPosition;
-                    RectTransform.localPosition = parentPosition.XY() - DeltaFromPivot;
+                    RectTransform.localPosition = parentPosition.XY() - Pivot;
                     break;
 
                 case EPosition.PivotOfParent:
@@ -82,14 +82,14 @@ namespace Elysia.UI
                         goto case EPosition.CenterOfScreen;
                     }
 
-                    Vector2 parentPivot = _parentUI.RectTransform.localPosition.XY() + _parentUI.DeltaFromPivot;
-                    RectTransform.localPosition = parentPivot - DeltaFromPivot;
+                    Vector2 parentPivot = _parentUI.RectTransform.localPosition.XY() + _parentUI.Pivot;
+                    RectTransform.localPosition = parentPivot - Pivot;
                     break;
 
                 case EPosition.Pointer:
                     Vector2 screenPosition = Game.Scene.Input.GetMousePosition();
                     Vector2 pointer = Game.Scene.UI.ScreenPointToUIPosition(screenPosition);
-                    RectTransform.localPosition = pointer - DeltaFromPivot;
+                    RectTransform.localPosition = pointer - Pivot;
                     break;
             }
         }
