@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Elysia.Pool
+namespace Elysia.Pools
 {
     public interface IObjectPool<T>
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Elysia.Scenes
 {
-    public class StateMachines : MainSceneBase
+    public class StateMachineScene : MainSceneBase
     {
     }
 }
