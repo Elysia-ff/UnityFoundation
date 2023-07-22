@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Elysia.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public abstract class UIBase : MonoBehaviour
+    public abstract partial class UIBase : MonoBehaviour
     {
         public RectTransform RectTransform { get; private set; }
 
@@ -27,7 +27,7 @@ namespace Elysia.UI
             set => _canvasGroup.alpha = value;
         }
 
-        public virtual void Initialize()
+        protected virtual void Initialize()
         {
             RectTransform = (RectTransform)transform;
             _canvasGroup = GetComponent<CanvasGroup>();
@@ -35,7 +35,7 @@ namespace Elysia.UI
 
         public abstract void Close();
 
-        public virtual void OnFocused()
+        protected virtual void OnFocused()
         {
         }
 
@@ -43,7 +43,7 @@ namespace Elysia.UI
         {
         }
 
-        public virtual void OnPointerPressed()
+        protected virtual void OnPointerPressed()
         {
             Debug.Log(Interactable);
         }
@@ -52,7 +52,7 @@ namespace Elysia.UI
     public abstract class UIBase<T> : UIBase
         where T : UIBase<T>
     {
-        public override void Initialize()
+        protected override void Initialize()
         {
             base.Initialize();
         }

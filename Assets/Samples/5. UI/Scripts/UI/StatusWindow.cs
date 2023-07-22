@@ -9,7 +9,7 @@ namespace Elysia.UI
     {
         [SerializeField] private Button _closeBtn;
 
-        public override void Initialize()
+        protected override void Initialize()
         {
             base.Initialize();
 

@@ -78,7 +78,7 @@ namespace Elysia.UI
             if (FocusedUI != null)
             {
                 FocusedUI.RectTransform.SetAsLastSibling();
-                FocusedUI.OnFocused();
+                UIBase.InvokeOnFocused(FocusedUI);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Elysia.UI
             }
 
             UIBase ui = Instantiate(prefab);
-            ui.Initialize();
+            UIBase.InvokeInitialize(ui);
             return ui;
         }
 
@@ -111,7 +111,7 @@ namespace Elysia.UI
                 RaycastResult result = _raycastResults[0];
                 UIBase ui = result.gameObject.GetComponentInParent<UIBase>();
                 FocusUI(ui);
-                ui.OnPointerPressed();
+                UIBase.InvokeOnPointerPressed(ui);
 
                 if (result.gameObject.layer == _uiMoveLayer)
                 {
