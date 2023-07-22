@@ -17,7 +17,10 @@ namespace Elysia.Scenes
             _pool = new ObjectPool<SomeObject>(transform,
                 () => new GameObject(nameof(SomeObject)).AddComponent<SomeObject>(),
                 (t) => Debug.Log("take"),
-                3, 16, 5);
+                worldPositionStays: false,
+                defaultInstantiateCount: 3,
+                defaultCapacity: 16,
+                maxSize: 5);
         }
 
         private void OnGUI()
