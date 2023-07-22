@@ -6,11 +6,18 @@ namespace Elysia.UI
 {
     public abstract class UIBase : MonoBehaviour
     {
+        public RectTransform RectTransform { get; private set; }
+
         public virtual void Initialize()
         {
+            RectTransform = (RectTransform)transform;
         }
 
         public abstract void Close();
+
+        public virtual void OnFocused()
+        {
+        }
     }
 
     public class UIBase<T> : UIBase
