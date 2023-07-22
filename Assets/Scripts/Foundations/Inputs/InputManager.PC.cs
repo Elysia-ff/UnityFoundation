@@ -21,7 +21,7 @@ namespace Elysia.Inputs
             return Input.GetMouseButton(button);
         }
 
-        private Vector2 GetMousePosition()
+        public Vector2 GetMousePosition()
         {
             return Input.mousePosition;
         }

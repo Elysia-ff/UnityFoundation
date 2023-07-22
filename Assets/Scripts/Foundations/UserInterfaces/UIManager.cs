@@ -39,29 +39,25 @@ namespace Elysia.UI
             return this;
         }
 
-        public T ShowUI<T>()
+        public T ShowUI<T>(EPosition position)
             where T : UIBase
         {
-            Type t = typeof(T);
-            if (!_cachedUIs.TryGetValue(t, out IObjectPool<UIBase> pool))
-            {
-                pool = new ObjectPool<UIBase>(_windowContainer, CreateUI<T>, null, false, 0, 4);
-                _cachedUIs.Add(t, pool);
-            }
-
-            UIBase ui = pool.Get();
+            UIBase ui = GetUI<T>();
             FocusUI(ui);
+            UIBase.InvokeSetPosition(ui, position);
 
             return (T)ui;
         }
 
-        public T ShowModalUI<T>(UIBase parent)
+        public T ShowModalUI<T>(UIBase parent, EPosition position)
             where T : UIBase
         {
-            T ui = ShowUI<T>();
+            UIBase ui = GetUI<T>();
+            FocusUI(ui);
             UIBase.InvokeSetParent(ui, parent);
+            UIBase.InvokeSetPosition(ui, position);
 
-            return ui;
+            return (T)ui;
         }
 
         public void HideUI<T>(UIBase ui)
@@ -89,6 +85,19 @@ namespace Elysia.UI
                 FocusedUI.RectTransform.SetAsLastSibling();
                 UIBase.InvokeOnFocused(FocusedUI);
             }
+        }
+
+        private UIBase GetUI<T>()
+            where T : UIBase
+        {
+            Type t = typeof(T);
+            if (!_cachedUIs.TryGetValue(t, out IObjectPool<UIBase> pool))
+            {
+                pool = new ObjectPool<UIBase>(_windowContainer, CreateUI<T>, null, false, 0, 4);
+                _cachedUIs.Add(t, pool);
+            }
+
+            return pool.Get();
         }
 
         private UIBase CreateUI<T>()
@@ -120,7 +129,7 @@ namespace Elysia.UI
                 RaycastResult result = _raycastResults[0];
                 UIBase ui = result.gameObject.GetComponentInParent<UIBase>();
 
-                if (ui.Interactable)
+                if (ui != null && ui.Interactable)
                 {
                     FocusUI(ui);
                     UIBase.InvokeOnPointerPressed(ui);

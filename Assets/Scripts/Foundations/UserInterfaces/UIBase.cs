@@ -22,6 +22,8 @@ namespace Elysia.UI
             set => _canvasGroup.alpha = value;
         }
 
+        protected virtual Vector2 DeltaFromPivot => Vector2.zero;
+
         protected virtual void Initialize()
         {
             RectTransform = (RectTransform)transform;
@@ -53,6 +55,43 @@ namespace Elysia.UI
 
         protected virtual void OnPointerPressed()
         {
+        }
+
+        private void SetPosition(EPosition position)
+        {
+            switch (position)
+            {
+                case EPosition.CenterOfScreen:
+                    Vector2 centerOfScreen = Game.Scene.UI.ScreenPointToUIPosition(new Vector2(Screen.width / 2, Screen.height / 2));
+                    RectTransform.localPosition = centerOfScreen - DeltaFromPivot;
+                    break;
+
+                case EPosition.CenterOfParent:
+                    if (!HasParentUI)
+                    {
+                        goto case EPosition.CenterOfScreen;
+                    }
+
+                    Vector3 parentPosition = _parentUI.RectTransform.localPosition;
+                    RectTransform.localPosition = parentPosition.XY() - DeltaFromPivot;
+                    break;
+
+                case EPosition.PivotOfParent:
+                    if (!HasParentUI)
+                    {
+                        goto case EPosition.CenterOfScreen;
+                    }
+
+                    Vector2 parentPivot = _parentUI.RectTransform.localPosition.XY() + _parentUI.DeltaFromPivot;
+                    RectTransform.localPosition = parentPivot - DeltaFromPivot;
+                    break;
+
+                case EPosition.Pointer:
+                    Vector2 screenPosition = Game.Scene.Input.GetMousePosition();
+                    Vector2 pointer = Game.Scene.UI.ScreenPointToUIPosition(screenPosition);
+                    RectTransform.localPosition = pointer - DeltaFromPivot;
+                    break;
+            }
         }
     }
 

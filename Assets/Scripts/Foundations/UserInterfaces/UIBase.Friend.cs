@@ -25,5 +25,10 @@ namespace Elysia.UI
         {
             ui.OnPointerPressed();
         }
+
+        public static void InvokeSetPosition(UIBase ui, EPosition position)
+        {
+            ui.SetPosition(position);
+        }
     }
 }

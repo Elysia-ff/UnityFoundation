@@ -44,7 +44,7 @@ namespace Elysia.Inputs
             return result;
         }
 
-        private Vector2 GetMousePosition()
+        public Vector2 GetMousePosition()
         {
             return lastDownedTouchID >= 0 ? Input.GetTouch(lastDownedTouchID).position : Input.mousePosition;
         }
