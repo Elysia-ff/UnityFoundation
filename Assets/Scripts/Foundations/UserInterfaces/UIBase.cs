@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Elysia.UI
 {
@@ -11,6 +10,7 @@ namespace Elysia.UI
         public RectTransform RectTransform { get; private set; }
 
         private CanvasGroup _canvasGroup;
+
         public bool Interactable
         {
             get => _canvasGroup.interactable;
@@ -49,7 +49,7 @@ namespace Elysia.UI
         }
     }
 
-    public class UIBase<T> : UIBase
+    public abstract class UIBase<T> : UIBase
         where T : UIBase<T>
     {
         public override void Initialize()
