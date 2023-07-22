@@ -52,12 +52,7 @@ namespace Elysia.UI
     public abstract class UIBase<T> : UIBase
         where T : UIBase<T>
     {
-        protected override void Initialize()
-        {
-            base.Initialize();
-        }
-
-        public override void Close()
+        public sealed override void Close()
         {
             Game.Scene.UI.HideUI<T>(this);
         }

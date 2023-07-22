@@ -49,10 +49,10 @@ namespace Elysia.UI
                 _cachedUIs.Add(t, pool);
             }
 
-            T ui = (T)pool.Get();
+            UIBase ui = pool.Get();
             FocusUI(ui);
 
-            return ui;
+            return (T)ui;
         }
 
         public void HideUI<T>(UIBase ui)
@@ -141,7 +141,7 @@ namespace Elysia.UI
             _movingUI = null;
         }
 
-        public Vector2 ScreenPointToUIPosition( Vector2 screenPosition)
+        public Vector2 ScreenPointToUIPosition(Vector2 screenPosition)
         {
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_windowContainer, screenPosition, Camera, out Vector2 localPosition))
             {
