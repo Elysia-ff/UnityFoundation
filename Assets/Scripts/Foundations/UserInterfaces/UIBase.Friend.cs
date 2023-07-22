@@ -11,14 +11,14 @@ namespace Elysia.UI
             ui.Initialize();
         }
 
+        public static void InvokeSetParent(UIBase ui, UIBase parent)
+        {
+            ui.SetParent(parent);
+        }
+
         public static void InvokeOnFocused(UIBase ui)
         {
             ui.OnFocused();
-        }
-
-        public static void InvokeOnInteractableChanged(UIBase ui, bool value)
-        {
-            ui.OnInteractableChanged(value);
         }
 
         public static void InvokeOnPointerPressed(UIBase ui)

@@ -11,15 +11,10 @@ namespace Elysia.UI
 
         private CanvasGroup _canvasGroup;
 
-        public bool Interactable
-        {
-            get => _canvasGroup.interactable;
-            set
-            {
-                _canvasGroup.interactable = value;
-                OnInteractableChanged(value);
-            }
-        }
+        private UIBase _parentUI;
+        public bool HasParentUI => _parentUI != null;
+
+        public bool Interactable => _canvasGroup.interactable;
 
         public float Alpha
         {
@@ -33,7 +28,20 @@ namespace Elysia.UI
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public abstract void Close();
+        protected void SetParent(UIBase parent)
+        {
+            _parentUI = parent;
+            parent._canvasGroup.interactable = false;
+        }
+
+        public virtual void Close()
+        {
+            if (_parentUI != null)
+            {
+                _parentUI._canvasGroup.interactable = true;
+                _parentUI = null;
+            }
+        }
 
         protected virtual void OnFocused()
         {
@@ -45,7 +53,6 @@ namespace Elysia.UI
 
         protected virtual void OnPointerPressed()
         {
-            Debug.Log(Interactable);
         }
     }
 
@@ -54,6 +61,8 @@ namespace Elysia.UI
     {
         public sealed override void Close()
         {
+            base.Close();
+
             Game.Scene.UI.HideUI<T>(this);
         }
     }

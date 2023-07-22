@@ -55,6 +55,15 @@ namespace Elysia.UI
             return (T)ui;
         }
 
+        public T ShowModalUI<T>(UIBase parent)
+            where T : UIBase
+        {
+            T ui = ShowUI<T>();
+            UIBase.InvokeSetParent(ui, parent);
+
+            return ui;
+        }
+
         public void HideUI<T>(UIBase ui)
             where T : UIBase
         {
@@ -66,7 +75,7 @@ namespace Elysia.UI
 
         public void FocusUI(UIBase ui)
         {
-            if (FocusedUI == ui)
+            if (FocusedUI == ui || !ui.Interactable)
             {
                 return;
             }
@@ -110,14 +119,18 @@ namespace Elysia.UI
             {
                 RaycastResult result = _raycastResults[0];
                 UIBase ui = result.gameObject.GetComponentInParent<UIBase>();
-                FocusUI(ui);
-                UIBase.InvokeOnPointerPressed(ui);
 
-                if (result.gameObject.layer == _uiMoveLayer)
+                if (ui.Interactable)
                 {
-                    _movingUI = ui;
-                    Vector2 uiPosition = ScreenPointToUIPosition(position);
-                    _movingUIDelta = uiPosition - ui.RectTransform.localPosition.XY();
+                    FocusUI(ui);
+                    UIBase.InvokeOnPointerPressed(ui);
+
+                    if (result.gameObject.layer == _uiMoveLayer)
+                    {
+                        _movingUI = ui;
+                        Vector2 uiPosition = ScreenPointToUIPosition(position);
+                        _movingUIDelta = uiPosition - ui.RectTransform.localPosition.XY();
+                    }
                 }
             }
         }
