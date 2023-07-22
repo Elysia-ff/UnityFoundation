@@ -43,6 +43,7 @@ namespace Elysia.UI
             where T : UIBase
         {
             UIBase ui = GetUI<T>();
+            UIBase.InvokeSetIgnoreParentGroups(ui, false);
             FocusUI(ui);
             UIBase.InvokeSetPosition(ui, position);
 
@@ -53,6 +54,7 @@ namespace Elysia.UI
             where T : UIBase
         {
             UIBase ui = GetUI<T>();
+            UIBase.InvokeSetIgnoreParentGroups(ui, true);
             FocusUI(ui);
             UIBase.InvokeSetParent(ui, parent);
             UIBase.InvokeSetPosition(ui, position);
@@ -65,6 +67,11 @@ namespace Elysia.UI
         {
             Type t = typeof(T);
             Debug.Assert(_cachedUIs.ContainsKey(t));
+
+            if (FocusedUI == ui)
+            {
+                FocusedUI = null;
+            }
 
             _cachedUIs[t].Release(ref ui);
         }

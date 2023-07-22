@@ -20,7 +20,12 @@ namespace Elysia.Scenes
 
             if (GUI.Button(new Rect(20, 100, Screen.width - 40, 60), $"Show {nameof(CommonWindow)}"))
             {
-                CommonWindow statusUI = Game.Scene.UI.ShowUI<CommonWindow>(pos);
+                Game.Scene.UI.ShowUI<CommonWindow>(pos);
+            }
+
+            if (GUI.Button(new Rect(20, 180, Screen.width - 40, 60), $"Show {nameof(ModalWindow)}"))
+            {
+                Game.Scene.UI.ShowModalUI<ModalWindow>(null, pos);
             }
         }
     }

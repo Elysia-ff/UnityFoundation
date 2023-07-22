@@ -33,7 +33,11 @@ namespace Elysia.UI
         protected void SetParent(UIBase parent)
         {
             _parentUI = parent;
-            parent._canvasGroup.interactable = false;
+
+            if (parent != null)
+            {
+                parent._canvasGroup.interactable = false;
+            }
         }
 
         public virtual void Close()
@@ -92,6 +96,11 @@ namespace Elysia.UI
                     RectTransform.localPosition = pointer - Pivot;
                     break;
             }
+        }
+
+        private void SetIgnoreParentGroups(bool value)
+        {
+            _canvasGroup.ignoreParentGroups = value;
         }
     }
 

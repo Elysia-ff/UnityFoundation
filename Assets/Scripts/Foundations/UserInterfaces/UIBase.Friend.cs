@@ -30,5 +30,10 @@ namespace Elysia.UI
         {
             ui.SetPosition(position);
         }
+
+        public static void InvokeSetIgnoreParentGroups(UIBase ui, bool value)
+        {
+            ui.SetIgnoreParentGroups(value);
+        }
     }
 }
