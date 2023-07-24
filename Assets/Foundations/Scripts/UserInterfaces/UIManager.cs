@@ -16,6 +16,8 @@ namespace Elysia.UI
 
         private RectTransform _windowContainer;
         private CanvasGroup _windowCanvasGroup;
+        private RectTransform _hudContainer;
+        private CanvasGroup _hudCanvasGroup;
         private UIBase _globalModelWindow;
 
         private UIBase _movingUI;
@@ -25,7 +27,7 @@ namespace Elysia.UI
         private readonly Dictionary<Type, UIBase> _uiPrefabs = new Dictionary<Type, UIBase>();
         private readonly Dictionary<Type, IObjectPool<UIBase>> _cachedUIs = new Dictionary<Type, IObjectPool<UIBase>>();
 
-        private readonly Dictionary<Type, HUDBase> _hudPrefabs = new Dictionary<Type, HUDBase>();
+        private readonly Dictionary<Type, HUDBase> _cachedHUDs = new Dictionary<Type, HUDBase>();
 
         private readonly List<RaycastResult> _raycastResults = new List<RaycastResult>();
 
@@ -37,6 +39,8 @@ namespace Elysia.UI
 
             _windowContainer = (RectTransform)transform.Find("WindowCanvas/Container");
             _windowCanvasGroup = _windowContainer.GetComponent<CanvasGroup>();
+            _hudContainer = (RectTransform)transform.Find("HUDCanvas/Container");
+            _hudCanvasGroup = _hudContainer.GetComponent<CanvasGroup>();
 
             _uiMoveLayer = LayerMask.NameToLayer("UI Move");
 
@@ -47,8 +51,10 @@ namespace Elysia.UI
             return this;
         }
 
+        #region UI
+
         public T ShowUI<T>(EPosition position, Action<T> beforeOnShow = null)
-            where T : UIBase
+            where T : UIBase<T>
         {
             T ui = GetUI<T>();
             UIBase.InvokeSetIgnoreParentGroups(ui, false);
@@ -63,16 +69,17 @@ namespace Elysia.UI
         }
 
         public T ShowModalUI<T>(UIBase parent, EPosition position, Action<T> beforeOnShow = null)
-            where T : UIBase
+            where T : UIBase<T>
         {
             T ui = GetUI<T>();
 
             if (parent == null)
             {
-                Debug.Assert(_globalModelWindow == null, $"GlobalModelWindow already exists.");
+                Debug.Assert(_globalModelWindow == null, $"GlobalModalWindow already exists.");
 
                 _globalModelWindow = ui;
                 _windowCanvasGroup.interactable = false;
+                _hudCanvasGroup.interactable = false;
             }
 
             UIBase.InvokeSetIgnoreParentGroups(ui, true);
@@ -102,6 +109,7 @@ namespace Elysia.UI
             {
                 _globalModelWindow = null;
                 _windowCanvasGroup.interactable = true;
+                _hudCanvasGroup.interactable = true;
             }
 
             UIBase.InvokeOnHide(ui);
@@ -156,6 +164,71 @@ namespace Elysia.UI
             UIBase.InvokeInitialize(ui);
             return ui;
         }
+
+        #endregion
+
+        #region HUD
+
+        public T ShowHUD<T>(Action<T> beforeOnShow = null)
+            where T : HUDBase<T>
+        {
+            Type t = typeof(T);
+            if (_cachedHUDs.TryGetValue(t, out HUDBase hudBase))
+            {
+                Debug.Assert(!hudBase.gameObject.activeSelf, $"{t.Name} already exists.");
+
+                hudBase.gameObject.SetActive(true);
+            }
+            else
+            {
+                hudBase = CreateHUD<T>();
+                _cachedHUDs.Add(t, hudBase);
+            }
+
+            T hud = (T)hudBase;
+            beforeOnShow?.Invoke(hud);
+            HUDBase.InvokeOnShow(hud);
+            hud.RectTransform.SetAsLastSibling();
+
+            return hud;
+        }
+
+        public void HideHUD<T>()
+            where T : HUDBase
+        {
+            Type t = typeof(T);
+            Debug.Assert(_cachedHUDs.ContainsKey(t) && _cachedHUDs[t].gameObject.activeSelf);
+
+            HUDBase hud = _cachedHUDs[t];
+            HUDBase.InvokeOnHide(hud);
+            hud.gameObject.SetActive(false);
+        }
+
+        public T GetHUD<T>()
+            where T : HUDBase
+        {
+            Type t = typeof(T);
+            if (!_cachedHUDs.TryGetValue(t, out HUDBase hud))
+            {
+                return null;
+            }
+
+            return (T)hud;
+        }
+
+        private HUDBase CreateHUD<T>()
+            where T : HUDBase
+        {
+            Type t = typeof(T);
+            HUDBase prefab = Resources.Load<T>($"Prefabs/UI/{t.Name}");
+
+            HUDBase hud = Instantiate(prefab, _hudContainer, false);
+            HUDBase.InvokeInitialize(hud);
+
+            return hud;
+        }
+
+        #endregion
 
         private void OnLMBPressed(Vector2 position, EModifier modifier)
         {

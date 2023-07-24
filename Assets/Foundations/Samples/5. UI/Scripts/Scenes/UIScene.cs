@@ -10,6 +10,13 @@ namespace Elysia.Scenes
     {
         private float positionValue;
 
+        public override void Initialize(int handle)
+        {
+            base.Initialize(handle);
+
+            Game.Scene.UI.ShowHUD<HUD>();
+        }
+
         private void OnGUI()
         {
             positionValue = GUI.HorizontalSlider(new Rect(20, 20, Screen.width - 40, 60), positionValue, 0, Enum.GetValues(typeof(EPosition)).Length - 1);
@@ -29,6 +36,17 @@ namespace Elysia.Scenes
             if (GUI.Button(new Rect(20, 180, Screen.width - 40, 60), $"Show {nameof(ModalWindow)}"))
             {
                 Game.Scene.UI.ShowModalUI<ModalWindow>(null, pos);
+            }
+
+            if (GUI.Button(new Rect(20, 260, Screen.width - 40, 60), $"Show {nameof(HUD)}"))
+            {
+                Game.Scene.UI.ShowHUD<HUD>();
+            }
+
+            if (GUI.Button(new Rect(20, 340, Screen.width - 40, 60), $"Hide {nameof(HUD)}"))
+            {
+                Game.Scene.UI.GetHUD<HUD>().Close();
+                //Game.Scene.UI.HideHUD<HUD>();
             }
         }
     }
