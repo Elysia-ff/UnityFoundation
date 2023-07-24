@@ -13,19 +13,32 @@ namespace Elysia.Inputs
 
         private class AxisEventValue
         {
+            public readonly string axis;
             public OnAxisEvent events;
+
+            public AxisEventValue(string _axis)
+            {
+                axis = _axis;
+            }
         }
 
         private class KeyEventValue
         {
+            public readonly KeyCode key;
             public float lastPressedTime;
             public float lastReleasedTime;
             public int tapCount;
             public OnKeyEvent[] events = new OnKeyEvent[(int)EInputType.Count];
+
+            public KeyEventValue(KeyCode _key)
+            {
+                key = _key;
+            }
         }
 
         private class MouseEventValue
         {
+            public readonly int button;
             public float lastPressedTime;
             public Vector2 lastPressedPosition;
             public float lastReleasedTime;
@@ -33,11 +46,16 @@ namespace Elysia.Inputs
             public int tapCount;
             public Vector2 lastTapPosition;
             public OnMouseEvent[] events = new OnMouseEvent[(int)EInputType.Count];
+
+            public MouseEventValue(int _button)
+            {
+                button = _button;
+            }
         }
 
-        private readonly Dictionary<string, AxisEventValue> _axisEvents = new Dictionary<string, AxisEventValue>();
-        private readonly Dictionary<KeyCode, KeyEventValue> _keyEvents = new Dictionary<KeyCode, KeyEventValue>();
-        private readonly Dictionary<int, MouseEventValue> _mouseEvents = new Dictionary<int, MouseEventValue>();
+        private readonly List<AxisEventValue> _axisEvents = new List<AxisEventValue>();
+        private readonly List<KeyEventValue> _keyEvents = new List<KeyEventValue>();
+        private readonly List<MouseEventValue> _mouseEvents = new List<MouseEventValue>();
 
         private const float TAP_THRESHOLD = 0.2f;
         private const float TAP_DELTA_THRESHOLD = 100f; // squared
@@ -45,10 +63,11 @@ namespace Elysia.Inputs
 
         public void BindAxis(string axis, OnAxisEvent onAxisEvent)
         {
-            if (!_axisEvents.TryGetValue(axis, out AxisEventValue value))
+            AxisEventValue value = _axisEvents.Find(v => v.axis == axis);
+            if (value == null)
             {
-                value = new AxisEventValue();
-                _axisEvents.Add(axis, value);
+                value = new AxisEventValue(axis);
+                _axisEvents.Add(value);
             }
 
             value.events += onAxisEvent;
@@ -56,7 +75,8 @@ namespace Elysia.Inputs
 
         public void UnbindAxis(string axis, OnAxisEvent onAxisEvent)
         {
-            if (!_axisEvents.TryGetValue(axis, out AxisEventValue value))
+            AxisEventValue value = _axisEvents.Find(v => v.axis == axis);
+            if (value == null)
             {
                 return;
             }
@@ -66,10 +86,11 @@ namespace Elysia.Inputs
 
         public void BindKey(KeyCode key, EInputType inputType, OnKeyEvent onKeyEvent)
         {
-            if (!_keyEvents.TryGetValue(key, out KeyEventValue value))
+            KeyEventValue value = _keyEvents.Find(v => v.key == key);
+            if (value == null)
             {
-                value = new KeyEventValue();
-                _keyEvents.Add(key, value);
+                value = new KeyEventValue(key);
+                _keyEvents.Add(value);
             }
 
             value.events[(int)inputType] += onKeyEvent;
@@ -77,7 +98,8 @@ namespace Elysia.Inputs
 
         public void UnbindKey(KeyCode key, EInputType inputType, OnKeyEvent onKeyEvent)
         {
-            if (!_keyEvents.TryGetValue(key, out KeyEventValue value))
+            KeyEventValue value = _keyEvents.Find(v => v.key == key);
+            if (value == null)
             {
                 return;
             }
@@ -87,10 +109,11 @@ namespace Elysia.Inputs
 
         public void BindMouse(int button, EInputType inputType, OnMouseEvent onMouseEvent)
         {
-            if (!_mouseEvents.TryGetValue(button, out MouseEventValue value))
+            MouseEventValue value = _mouseEvents.Find(v => v.button == button);
+            if (value == null)
             {
-                value = new MouseEventValue();
-                _mouseEvents.Add(button, value);
+                value = new MouseEventValue(button);
+                _mouseEvents.Add(value);
             }
 
             value.events[(int)inputType] += onMouseEvent;
@@ -98,7 +121,8 @@ namespace Elysia.Inputs
 
         public void UnbindMouse(int button, EInputType inputType, OnMouseEvent onMouseEvent)
         {
-            if (!_mouseEvents.TryGetValue(button, out MouseEventValue value))
+            MouseEventValue value = _mouseEvents.Find(v => v.button == button);
+            if (value == null)
             {
                 return;
             }
@@ -111,8 +135,8 @@ namespace Elysia.Inputs
             #region Axis
             foreach (var kv in _axisEvents)
             {
-                float value = Input.GetAxis(kv.Key);
-                kv.Value.events?.Invoke(value);
+                float value = Input.GetAxis(kv.axis);
+                kv.events?.Invoke(value);
             }
             #endregion
 
@@ -121,52 +145,51 @@ namespace Elysia.Inputs
 
             foreach (var kv in _keyEvents)
             {
-                KeyCode keyCode = kv.Key;
-                KeyEventValue eventValue = kv.Value;
+                KeyCode keyCode = kv.key;
 
                 if (Input.GetKeyDown(keyCode))
                 {
-                    eventValue.lastPressedTime = Time.time;
-                    if (eventValue.lastPressedTime - eventValue.lastReleasedTime is <= 0f or > DOUBLE_TAP_THRESHOLD)
+                    kv.lastPressedTime = Time.time;
+                    if (kv.lastPressedTime - kv.lastReleasedTime is <= 0f or > DOUBLE_TAP_THRESHOLD)
                     {
-                        eventValue.tapCount = 0;
+                        kv.tapCount = 0;
                     }
 
-                    eventValue.events[(int)EInputType.Pressed]?.Invoke(modifier);
+                    kv.events[(int)EInputType.Pressed]?.Invoke(modifier);
                 }
                 else
                 {
                     bool isHolding = Input.GetKey(keyCode);
                     if (isHolding)
                     {
-                        eventValue.events[(int)EInputType.Holding]?.Invoke(modifier);
+                        kv.events[(int)EInputType.Holding]?.Invoke(modifier);
                     }
-                    else if (eventValue.lastPressedTime > eventValue.lastReleasedTime)
+                    else if (kv.lastPressedTime > kv.lastReleasedTime)
                     {
-                        eventValue.lastReleasedTime = Time.time;
-                        if (eventValue.lastReleasedTime - eventValue.lastPressedTime is > 0f and <= TAP_THRESHOLD)
+                        kv.lastReleasedTime = Time.time;
+                        if (kv.lastReleasedTime - kv.lastPressedTime is > 0f and <= TAP_THRESHOLD)
                         {
-                            eventValue.tapCount++;
+                            kv.tapCount++;
                         }
                         else
                         {
-                            eventValue.tapCount = 0;
+                            kv.tapCount = 0;
                         }
 
-                        eventValue.events[(int)EInputType.Released]?.Invoke(modifier);
+                        kv.events[(int)EInputType.Released]?.Invoke(modifier);
 
-                        switch (eventValue.tapCount)
+                        switch (kv.tapCount)
                         {
                             case 0:
                                 break;
 
                             case 1:
-                                eventValue.events[(int)EInputType.SingleTap]?.Invoke(modifier);
+                                kv.events[(int)EInputType.SingleTap]?.Invoke(modifier);
                                 break;
 
                             case 2:
-                                eventValue.events[(int)EInputType.DoubleTap]?.Invoke(modifier);
-                                eventValue.tapCount = 0;
+                                kv.events[(int)EInputType.DoubleTap]?.Invoke(modifier);
+                                kv.tapCount = 0;
                                 break;
 
                             default:
@@ -182,57 +205,56 @@ namespace Elysia.Inputs
             Vector2 mousePosition = GetMousePosition();
             foreach (var kv in _mouseEvents)
             {
-                int button = kv.Key;
-                MouseEventValue eventValue = kv.Value;
+                int button = kv.button;
 
                 if (GetMouseButtonDown(button))
                 {
-                    eventValue.lastPressedTime = Time.time;
-                    eventValue.lastPressedPosition = mousePosition;
-                    if (eventValue.lastPressedTime - eventValue.lastReleasedTime is <= 0f or > DOUBLE_TAP_THRESHOLD ||
-                        (eventValue.lastPressedPosition - eventValue.lastTapPosition).sqrMagnitude >= TAP_DELTA_THRESHOLD)
+                    kv.lastPressedTime = Time.time;
+                    kv.lastPressedPosition = mousePosition;
+                    if (kv.lastPressedTime - kv.lastReleasedTime is <= 0f or > DOUBLE_TAP_THRESHOLD ||
+                        (kv.lastPressedPosition - kv.lastTapPosition).sqrMagnitude >= TAP_DELTA_THRESHOLD)
                     {
-                        eventValue.tapCount = 0;
+                        kv.tapCount = 0;
                     }
 
-                    eventValue.events[(int)EInputType.Pressed]?.Invoke(mousePosition, modifier);
+                    kv.events[(int)EInputType.Pressed]?.Invoke(mousePosition, modifier);
                 }
                 else
                 {
                     bool isHolding = GetMouseButton(button);
                     if (isHolding)
                     {
-                        eventValue.events[(int)EInputType.Holding]?.Invoke(mousePosition, modifier);
+                        kv.events[(int)EInputType.Holding]?.Invoke(mousePosition, modifier);
                     }
-                    else if (eventValue.lastPressedTime > eventValue.lastReleasedTime)
+                    else if (kv.lastPressedTime > kv.lastReleasedTime)
                     {
-                        eventValue.lastReleasedTime = Time.time;
-                        eventValue.lastReleasedPosition = mousePosition;
-                        if (eventValue.lastReleasedTime - eventValue.lastPressedTime is > 0f and <= TAP_THRESHOLD &&
-                            (eventValue.lastReleasedPosition - eventValue.lastPressedPosition).sqrMagnitude < TAP_DELTA_THRESHOLD)
+                        kv.lastReleasedTime = Time.time;
+                        kv.lastReleasedPosition = mousePosition;
+                        if (kv.lastReleasedTime - kv.lastPressedTime is > 0f and <= TAP_THRESHOLD &&
+                            (kv.lastReleasedPosition - kv.lastPressedPosition).sqrMagnitude < TAP_DELTA_THRESHOLD)
                         {
-                            eventValue.tapCount++;
-                            eventValue.lastTapPosition = mousePosition;
+                            kv.tapCount++;
+                            kv.lastTapPosition = mousePosition;
                         }
                         else
                         {
-                            eventValue.tapCount = 0;
+                            kv.tapCount = 0;
                         }
 
-                        eventValue.events[(int)EInputType.Released]?.Invoke(mousePosition, modifier);
+                        kv.events[(int)EInputType.Released]?.Invoke(mousePosition, modifier);
 
-                        switch (eventValue.tapCount)
+                        switch (kv.tapCount)
                         {
                             case 0:
                                 break;
 
                             case 1:
-                                eventValue.events[(int)EInputType.SingleTap]?.Invoke(mousePosition, modifier);
+                                kv.events[(int)EInputType.SingleTap]?.Invoke(mousePosition, modifier);
                                 break;
 
                             case 2:
-                                eventValue.events[(int)EInputType.DoubleTap]?.Invoke(mousePosition, modifier);
-                                eventValue.tapCount = 0;
+                                kv.events[(int)EInputType.DoubleTap]?.Invoke(mousePosition, modifier);
+                                kv.tapCount = 0;
                                 break;
 
                             default:
