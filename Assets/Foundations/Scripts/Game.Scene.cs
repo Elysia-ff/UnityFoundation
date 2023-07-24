@@ -10,6 +10,7 @@ namespace Elysia
     public partial class Game
     {
         public static MainSceneBase Scene { get; private set; }
+        public static T SceneAs<T>() where T : MainSceneBase => (T)Scene;
 
         private static List<SceneBase> _subScenes = new List<SceneBase>();
         public static IReadOnlyList<SceneBase> SubScenes => _subScenes;
