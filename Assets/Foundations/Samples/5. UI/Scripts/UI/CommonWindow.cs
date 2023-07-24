@@ -16,6 +16,8 @@ namespace Elysia.UI
 
         protected override Vector2 Pivot => _pivot.localPosition;
 
+        public event Action OnClose;
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -32,6 +34,21 @@ namespace Elysia.UI
             _positionDropdown.value = 0;
 
             _showModalWindowBtn.onClick.AddListener(OnShowModalWindow);
+        }
+
+        protected override void OnShow()
+        {
+            base.OnShow();
+
+            Debug.Log($"{nameof(CommonWindow)} show");
+        }
+
+        protected override void OnHide()
+        {
+            base.OnHide();
+
+            OnClose?.Invoke();
+            OnClose = null;
         }
 
         private void OnShowModalWindow()

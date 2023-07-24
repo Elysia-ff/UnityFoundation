@@ -30,14 +30,12 @@ namespace Elysia.UI
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        protected void SetParent(UIBase parent)
+        protected virtual void OnShow()
         {
-            _parentUI = parent;
+        }
 
-            if (parent != null)
-            {
-                parent._canvasGroup.interactable = false;
-            }
+        protected virtual void OnHide()
+        {
         }
 
         public virtual void Close()
@@ -46,6 +44,16 @@ namespace Elysia.UI
             {
                 _parentUI._canvasGroup.interactable = true;
                 _parentUI = null;
+            }
+        }
+
+        private void SetParent(UIBase parent)
+        {
+            _parentUI = parent;
+
+            if (parent != null)
+            {
+                parent._canvasGroup.interactable = false;
             }
         }
 

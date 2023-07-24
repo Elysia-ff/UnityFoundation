@@ -25,6 +25,8 @@ namespace Elysia.UI
         private readonly Dictionary<Type, UIBase> _uiPrefabs = new Dictionary<Type, UIBase>();
         private readonly Dictionary<Type, IObjectPool<UIBase>> _cachedUIs = new Dictionary<Type, IObjectPool<UIBase>>();
 
+        private readonly Dictionary<Type, HUDBase> _hudPrefabs = new Dictionary<Type, HUDBase>();
+
         private readonly List<RaycastResult> _raycastResults = new List<RaycastResult>();
 
         private const float SCREEN_MARGIN = 20f;
@@ -45,21 +47,25 @@ namespace Elysia.UI
             return this;
         }
 
-        public T ShowUI<T>(EPosition position)
+        public T ShowUI<T>(EPosition position, Action<T> beforeOnShow = null)
             where T : UIBase
         {
-            UIBase ui = GetUI<T>();
+            T ui = GetUI<T>();
             UIBase.InvokeSetIgnoreParentGroups(ui, false);
-            FocusUI(ui);
             UIBase.InvokeSetPosition(ui, position);
 
-            return (T)ui;
+            beforeOnShow?.Invoke(ui);
+            UIBase.InvokeOnShow(ui);
+
+            FocusUI(ui);
+
+            return ui;
         }
 
-        public T ShowModalUI<T>(UIBase parent, EPosition position)
+        public T ShowModalUI<T>(UIBase parent, EPosition position, Action<T> beforeOnShow = null)
             where T : UIBase
         {
-            UIBase ui = GetUI<T>();
+            T ui = GetUI<T>();
 
             if (parent == null)
             {
@@ -70,11 +76,15 @@ namespace Elysia.UI
             }
 
             UIBase.InvokeSetIgnoreParentGroups(ui, true);
-            FocusUI(ui);
             UIBase.InvokeSetParent(ui, parent);
             UIBase.InvokeSetPosition(ui, position);
 
-            return (T)ui;
+            beforeOnShow?.Invoke(ui);
+            UIBase.InvokeOnShow(ui);
+
+            FocusUI(ui);
+
+            return ui;
         }
 
         public void HideUI<T>(UIBase ui)
@@ -93,6 +103,8 @@ namespace Elysia.UI
                 _globalModelWindow = null;
                 _windowCanvasGroup.interactable = true;
             }
+
+            UIBase.InvokeOnHide(ui);
 
             _cachedUIs[t].Release(ref ui);
         }
@@ -115,7 +127,7 @@ namespace Elysia.UI
             }
         }
 
-        private UIBase GetUI<T>()
+        private T GetUI<T>()
             where T : UIBase
         {
             Type t = typeof(T);
@@ -125,7 +137,7 @@ namespace Elysia.UI
                 _cachedUIs.Add(t, pool);
             }
 
-            return pool.Get();
+            return (T)pool.Get();
         }
 
         private UIBase CreateUI<T>()

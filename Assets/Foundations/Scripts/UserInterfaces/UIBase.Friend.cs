@@ -11,9 +11,14 @@ namespace Elysia.UI
             ui.Initialize();
         }
 
-        public static void InvokeSetParent(UIBase ui, UIBase parent)
+        public static void InvokeOnShow(UIBase ui)
         {
-            ui.SetParent(parent);
+            ui.OnShow();
+        }
+
+        public static void InvokeOnHide(UIBase ui)
+        {
+            ui.OnHide();
         }
 
         public static void InvokeOnFocused(UIBase ui)
@@ -24,6 +29,11 @@ namespace Elysia.UI
         public static void InvokeOnPointerPressed(UIBase ui)
         {
             ui.OnPointerPressed();
+        }
+
+        public static void InvokeSetParent(UIBase ui, UIBase parent)
+        {
+            ui.SetParent(parent);
         }
 
         public static void InvokeSetPosition(UIBase ui, EPosition position)
