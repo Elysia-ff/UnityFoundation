@@ -15,6 +15,9 @@ namespace Elysia.UI
         public UIBase FocusedUI { get; private set; }
 
         private RectTransform _windowContainer;
+        private CanvasGroup _windowCanvasGroup;
+        private UIBase _globalModelWindow;
+
         private UIBase _movingUI;
         private Vector2 _movingUIDelta;
         private int _uiMoveLayer;
@@ -29,7 +32,10 @@ namespace Elysia.UI
         public UIManager Initialize()
         {
             Camera = transform.Find("Camera").GetComponent<Camera>();
+
             _windowContainer = (RectTransform)transform.Find("WindowCanvas/Container");
+            _windowCanvasGroup = _windowContainer.GetComponent<CanvasGroup>();
+
             _uiMoveLayer = LayerMask.NameToLayer("UI Move");
 
             Game.Scene.Input.BindMouse(0, EInputType.Pressed, OnLMBPressed);
@@ -54,6 +60,15 @@ namespace Elysia.UI
             where T : UIBase
         {
             UIBase ui = GetUI<T>();
+
+            if (parent == null)
+            {
+                Debug.Assert(_globalModelWindow == null, $"GlobalModelWindow already exists.");
+
+                _globalModelWindow = ui;
+                _windowCanvasGroup.interactable = false;
+            }
+
             UIBase.InvokeSetIgnoreParentGroups(ui, true);
             FocusUI(ui);
             UIBase.InvokeSetParent(ui, parent);
@@ -71,6 +86,12 @@ namespace Elysia.UI
             if (FocusedUI == ui)
             {
                 FocusedUI = null;
+            }
+
+            if (_globalModelWindow == ui)
+            {
+                _globalModelWindow = null;
+                _windowCanvasGroup.interactable = true;
             }
 
             _cachedUIs[t].Release(ref ui);
@@ -136,7 +157,7 @@ namespace Elysia.UI
                 RaycastResult result = _raycastResults[0];
                 UIBase ui = result.gameObject.GetComponentInParent<UIBase>();
 
-                if (ui != null && ui.Interactable)
+                if (ui != null && ui.Interactable && (_globalModelWindow == null || _globalModelWindow == ui))
                 {
                     FocusUI(ui);
                     UIBase.InvokeOnPointerPressed(ui);
