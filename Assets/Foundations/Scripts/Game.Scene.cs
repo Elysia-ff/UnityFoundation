@@ -28,12 +28,12 @@ namespace Elysia
         /// <summary>
         /// Async version of LoadScene. See its summary for more detail.
         /// </summary>
-        public static void LoadSceneAsync(string sceneName, LoadSceneMode mode)
+        public static void LoadSceneAsync(string sceneName, LoadSceneMode mode, IHasLoadingBar receiver = null)
         {
-            _instance.StartCoroutine(LoadSceneAsyncRoutine(sceneName, mode));
+            _instance.StartCoroutine(LoadSceneAsyncRoutine(sceneName, mode, receiver));
         }
 
-        public static void UnloadSubSceneAsync(int index)
+        public static void UnloadSubSceneAsync(int index, IHasLoadingBar receiver = null)
         {
             Debug.Assert(0 <= index && index < _subScenes.Count);
 
@@ -43,7 +43,7 @@ namespace Elysia
                 Scene s = SceneManager.GetSceneAt(i);
                 if (s.handle == handle)
                 {
-                    _instance.StartCoroutine(UnloadSceneAsyncRoutine(s));
+                    _instance.StartCoroutine(UnloadSceneAsyncRoutine(s, receiver));
                     return;
                 }
             }
@@ -109,23 +109,45 @@ namespace Elysia
             return new GameObject(sceneName, t).GetComponent<T>();
         }
 
-        private static IEnumerator LoadSceneAsyncRoutine(string sceneName, LoadSceneMode mode)
+        private static IEnumerator LoadSceneAsyncRoutine(string sceneName, LoadSceneMode mode, IHasLoadingBar receiver)
         {
             AsyncOperation op = SceneManager.LoadSceneAsync(sceneName, mode);
 
             while (!op.isDone)
             {
+                if (receiver != null)
+                {
+                    float progress = op.progress;
+                    receiver.OnLoadingInProgress(progress);
+                }
+
                 yield return null;
+            }
+
+            if (mode == LoadSceneMode.Additive && receiver != null)
+            {
+                receiver.OnLoadingInProgress(1f);
             }
         }
 
-        private static IEnumerator UnloadSceneAsyncRoutine(Scene scene)
+        private static IEnumerator UnloadSceneAsyncRoutine(Scene scene, IHasLoadingBar receiver)
         {
             AsyncOperation op = SceneManager.UnloadSceneAsync(scene);
 
             while (!op.isDone)
             {
+                if (receiver != null)
+                {
+                    float progress = op.progress;
+                    receiver.OnLoadingInProgress(progress);
+                }
+
                 yield return null;
+            }
+
+            if (receiver != null)
+            {
+                receiver.OnLoadingInProgress(1f);
             }
         }
     }
