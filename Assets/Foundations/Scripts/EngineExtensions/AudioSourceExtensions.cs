@@ -8,9 +8,10 @@ namespace Elysia
     {
         public static void PlayOneShot(this AudioSource audioSource, string key, float volumeScale = 1f)
         {
-            AudioClip clip = Game.Audio.GetClip(key);
-
-            audioSource.PlayOneShot(clip, volumeScale);
+            Game.Audio.GetClipAsync(key, clip =>
+            {
+                audioSource.PlayOneShot(clip, volumeScale);
+            });
         }
     }
 }

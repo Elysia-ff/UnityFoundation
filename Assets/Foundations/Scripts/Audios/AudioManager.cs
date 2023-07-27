@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
 
 namespace Elysia.Audios
@@ -87,11 +88,14 @@ namespace Elysia.Audios
             return this;
         }
 
-        public AudioSource CreateAudioSource(string key, GameObject parent, EMixerType mixerType, bool loop)
+        public void CreateAudioSource(string key, GameObject parent, EMixerType mixerType, bool loop, Action<AudioSource> onCompleted)
         {
-            AudioClip clip = GetClip(key);
+            GetClipAsync(key, clip =>
+            {
+                AudioSource audioSource = CreateAudioSource(clip, parent, mixerType, loop);
 
-            return CreateAudioSource(clip, parent, mixerType, loop);
+                onCompleted?.Invoke(audioSource);
+            });
         }
 
         public AudioSource CreateAudioSource(AudioClip clip, GameObject parent, EMixerType mixerType, bool loop)
@@ -105,16 +109,21 @@ namespace Elysia.Audios
             return audioSource;
         }
 
-        public AudioClip GetClip(string key)
+        public void GetClipAsync(string key, Action<AudioClip> onCompleted)
         {
-            if (!_cachedClips.TryGetValue(key, out AudioClip clip))
+            if (_cachedClips.TryGetValue(key, out AudioClip clip))
             {
-                clip = Resources.Load<AudioClip>($"Audios/{key}");
-                Debug.Assert(clip != null, $"Not found '{key}'");
-                _cachedClips.Add(key, clip);
+                onCompleted(clip);
+                return;
             }
 
-            return clip;
+            Addressables.LoadAssetAsync<AudioClip>(key).Completed += handle =>
+            {
+                AudioClip clip = handle.Result;
+                _cachedClips.TryAdd(key, clip);
+
+                Addressables.Release(handle);
+            };
         }
 
         private static float VolumeToDecibel(float volume)

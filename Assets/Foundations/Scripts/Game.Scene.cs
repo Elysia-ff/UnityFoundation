@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
 
 namespace Elysia
@@ -31,6 +32,11 @@ namespace Elysia
         public static void LoadSceneAsync(string sceneName, LoadSceneMode mode, IHasLoadingBar receiver = null)
         {
             _instance.StartCoroutine(LoadSceneAsyncRoutine(sceneName, mode, receiver));
+        }
+
+        public static void LoadAddressableSceneAsync(string key, LoadSceneMode mode, IHasLoadingBar receiver = null)
+        {
+            _instance.StartCoroutine(LoadAddressableSceneAsyncRoutine(key, mode, receiver));
         }
 
         public static void UnloadSubSceneAsync(int index, IHasLoadingBar receiver = null)
@@ -128,6 +134,30 @@ namespace Elysia
             {
                 receiver.OnLoadingInProgress(1f);
             }
+        }
+
+        private static IEnumerator LoadAddressableSceneAsyncRoutine(string key, LoadSceneMode mode, IHasLoadingBar receiver = null)
+        {
+            var handle = Addressables.LoadSceneAsync(key, mode, false);
+            while (!handle.IsDone)
+            {
+                if (receiver != null)
+                {
+                    float progress = handle.PercentComplete;
+                    receiver.OnLoadingInProgress(progress);
+                }
+
+                yield return null;
+            }
+
+            if (receiver != null)
+            {
+                receiver.OnLoadingInProgress(1f);
+            }
+
+            handle.Result.ActivateAsync();
+
+            Addressables.Release(handle);
         }
 
         private static IEnumerator UnloadSceneAsyncRoutine(Scene scene, IHasLoadingBar receiver)
