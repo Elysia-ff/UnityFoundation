@@ -1696,6 +1696,8 @@ GameObject:
   - component: {fileID: 6506905425021328792}
   - component: {fileID: 8036190527112932880}
   - component: {fileID: 4680050710053453128}
+  - component: {fileID: 4490664794760882288}
+  - component: {fileID: 3725547392560927671}
   m_Layer: 5
   m_Name: LicenseText
   m_TagString: Untagged
@@ -1721,7 +1723,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 50, y: -50}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8036190527112932880
 CanvasRenderer:
@@ -1751,7 +1753,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Songs by TELL YOUR STORY music by ikson\u2122\r\nLink: <u>https://ikson.com/tell-your-story</u>"
+  m_text: "Songs by TELL YOUR STORY music by ikson\u2122\r\nLink: <link><u>https://ikson.com/tell-your-story</u></link>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1820,6 +1822,32 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4490664794760882288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6629076343115613593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9926be6d122a94442a8229957a5ed5bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3725547392560927671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6629076343115613593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!1 &7105246390418449871
 GameObject:
   m_ObjectHideFlags: 0
@@ -2305,6 +2333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57646b3b98169ba4a9531ee10d9b831d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _licenseHyperLink: {fileID: 4490664794760882288}
   _startAsBGMBtn: {fileID: 191074602263489450}
   _startAsSFXBtn: {fileID: 4483851475939207365}
   _stopBtn: {fileID: 2890256433934133774}

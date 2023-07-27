@@ -1,6 +1,8 @@
 using Elysia.Audios;
+using Elysia.Components;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +10,8 @@ namespace Elysia.UI
 {
     public class AudioHUD : HUDBase<AudioHUD>
     {
+        [SerializeField] private HyperLinkComponent _licenseHyperLink;
+
         [SerializeField] private Button _startAsBGMBtn;
         [SerializeField] private Button _startAsSFXBtn;
         [SerializeField] private Button _stopBtn;
@@ -22,6 +26,8 @@ namespace Elysia.UI
         {
             base.Initialize();
 
+            _licenseHyperLink.OnLinkClicked += OnLinkClicked;
+
             _startAsBGMBtn.onClick.AddListener(OnStartAsBGM);
             _startAsSFXBtn.onClick.AddListener(OnStartAsSFX);
             _stopBtn.onClick.AddListener(OnStop);
@@ -34,6 +40,11 @@ namespace Elysia.UI
 
             _sfxVolume.value = Game.Audio.SFXVolume;
             _sfxVolume.onValueChanged.AddListener(OnSFXVolumeChanged);
+        }
+
+        private void OnLinkClicked(int index, in TMP_LinkInfo linkInfo)
+        {
+            Application.OpenURL(linkInfo.GetLinkText());
         }
 
         private void OnStartAsBGM()
