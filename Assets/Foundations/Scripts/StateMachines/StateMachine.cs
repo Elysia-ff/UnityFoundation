@@ -9,6 +9,7 @@ namespace Elysia.StateMachines
         where T : unmanaged, Enum
     {
         private StateBase<T, TData> _state;
+        public T State => _state.State;
 
         public readonly Dictionary<T, StateBase<T, TData>> _states = new Dictionary<T, StateBase<T, TData>>();
 
@@ -44,6 +45,16 @@ namespace Elysia.StateMachines
             }
 
             _state.OnUpdate(deltaTime);
+        }
+
+        public void Stop()
+        {
+            if (_state != null)
+            {
+                _state.OnEnd((-1).ToEnum<int, T>());
+            }
+
+            _state = null;
         }
     }
 }

@@ -11,5 +11,7 @@ namespace Elysia.StateMachines
         void Transit(T stateType);
 
         void Update(float deltaTime);
+
+        void Stop();
     }
 }
