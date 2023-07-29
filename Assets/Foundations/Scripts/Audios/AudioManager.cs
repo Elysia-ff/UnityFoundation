@@ -94,6 +94,8 @@ namespace Elysia.Audios
                 AudioSource audioSource = CreateAudioSource(clip, parent, mixerType, loop);
 
                 onCompleted?.Invoke(audioSource);
+
+                Addressables.Release(handle);
             };
         }
 

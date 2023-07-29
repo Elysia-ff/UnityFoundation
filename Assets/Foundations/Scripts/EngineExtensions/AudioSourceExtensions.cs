@@ -13,6 +13,8 @@ namespace Elysia
             {
                 AudioClip clip = handle.Result;
                 audioSource.PlayOneShot(clip, volumeScale);
+
+                Addressables.Release(handle);
             };
         }
     }
