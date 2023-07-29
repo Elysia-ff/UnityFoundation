@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace Elysia.UI
@@ -54,8 +55,11 @@ namespace Elysia.UI
                 Destroy(_audioSource);
             }
 
-            _audioSource = Game.Audio.CreateAudioSource("Clips/Cloudy by Ikson", gameObject, EMixerType.BGM, true);
-            _audioSource.Play();
+            Game.Audio.CreateAudioSource("Audios/Clips/Cloudy by Ikson.mp3", gameObject, EMixerType.BGM, true, (audioSource) =>
+            {
+                _audioSource = audioSource;
+                _audioSource.Play();
+            });
         }
 
         private void OnStartAsSFX()
@@ -65,8 +69,11 @@ namespace Elysia.UI
                 Destroy(_audioSource);
             }
 
-            _audioSource = Game.Audio.CreateAudioSource("Clips/Cloudy by Ikson", gameObject, EMixerType.SFX, false);
-            _audioSource.Play();
+            Game.Audio.CreateAudioSource("Audios/Clips/Cloudy by Ikson.mp3", gameObject, EMixerType.SFX, false, (audioSource) =>
+            {
+                _audioSource = audioSource;
+                _audioSource.Play();
+            });
         }
 
         private void OnStop()

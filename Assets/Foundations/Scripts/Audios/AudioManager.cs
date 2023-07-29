@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
 
 namespace Elysia.Audios
@@ -71,8 +72,6 @@ namespace Elysia.Audios
         private AudioMixer _audioMixer;
         private readonly Dictionary<EMixerType, MixerData> _mixerGroups = new Dictionary<EMixerType, MixerData>();
 
-        private readonly Dictionary<string, AudioClip> _cachedClips = new Dictionary<string, AudioClip>();
-
         public AudioManager Initialize()
         {
             _audioMixer = Resources.Load<AudioMixer>("Audios/AudioMixer");
@@ -87,11 +86,15 @@ namespace Elysia.Audios
             return this;
         }
 
-        public AudioSource CreateAudioSource(string key, GameObject parent, EMixerType mixerType, bool loop)
+        public void CreateAudioSource(string key, GameObject parent, EMixerType mixerType, bool loop, Action<AudioSource> onCompleted)
         {
-            AudioClip clip = GetClip(key);
+            Addressables.LoadAssetAsync<AudioClip>(key).Completed += handle =>
+            {
+                AudioClip clip = handle.Result;
+                AudioSource audioSource = CreateAudioSource(clip, parent, mixerType, loop);
 
-            return CreateAudioSource(clip, parent, mixerType, loop);
+                onCompleted?.Invoke(audioSource);
+            };
         }
 
         public AudioSource CreateAudioSource(AudioClip clip, GameObject parent, EMixerType mixerType, bool loop)
@@ -103,18 +106,6 @@ namespace Elysia.Audios
             audioSource.loop = loop;
 
             return audioSource;
-        }
-
-        public AudioClip GetClip(string key)
-        {
-            if (!_cachedClips.TryGetValue(key, out AudioClip clip))
-            {
-                clip = Resources.Load<AudioClip>($"Audios/{key}");
-                Debug.Assert(clip != null, $"Not found '{key}'");
-                _cachedClips.Add(key, clip);
-            }
-
-            return clip;
         }
 
         private static float VolumeToDecibel(float volume)

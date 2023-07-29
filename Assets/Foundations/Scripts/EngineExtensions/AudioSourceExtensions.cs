@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Elysia
 {
@@ -8,9 +9,11 @@ namespace Elysia
     {
         public static void PlayOneShot(this AudioSource audioSource, string key, float volumeScale = 1f)
         {
-            AudioClip clip = Game.Audio.GetClip(key);
-
-            audioSource.PlayOneShot(clip, volumeScale);
+            Addressables.LoadAssetAsync<AudioClip>(key).Completed += handle =>
+            {
+                AudioClip clip = handle.Result;
+                audioSource.PlayOneShot(clip, volumeScale);
+            };
         }
     }
 }
