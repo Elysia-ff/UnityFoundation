@@ -154,8 +154,9 @@ namespace Elysia.UI
             Type t = typeof(T);
             if (!_uiPrefabs.TryGetValue(t, out UIBase prefab))
             {
-                prefab = Resources.Load<T>($"Prefabs/UI/{t.Name}");
-                Debug.Assert(prefab != null);
+                string key = $"UI/Prefabs/{t.Name}";
+                prefab = Resources.Load<T>(key);
+                Debug.Assert(prefab != null, $"Not found '{key}'");
 
                 _uiPrefabs.Add(t, prefab);
             }
@@ -220,7 +221,9 @@ namespace Elysia.UI
             where T : HUDBase
         {
             Type t = typeof(T);
-            HUDBase prefab = Resources.Load<T>($"Prefabs/UI/{t.Name}");
+            string key = $"UI/Prefabs/{t.Name}";
+            HUDBase prefab = Resources.Load<T>(key);
+            Debug.Assert(prefab != null, $"Not found '{key}'");
 
             HUDBase hud = Instantiate(prefab, _hudContainer, false);
             HUDBase.InvokeInitialize(hud);

@@ -16,7 +16,12 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 06deb9cce1059fb409f4a376ce2979ac
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: a455c0a1a91c52841bbf75b6b1e82562
+    m_Address: Audios/Clips/Cloudy by Ikson.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3107a6f58ba8b4e4eba623eab198888e, type: 2}
   m_SchemaSet:
