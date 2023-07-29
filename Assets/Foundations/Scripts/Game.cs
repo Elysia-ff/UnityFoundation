@@ -2,6 +2,7 @@ using Elysia.Audios;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Elysia
 {
@@ -20,6 +21,7 @@ namespace Elysia
             }
 
             _instance = this;
+            Addressables.InitializeAsync(gameObject);
 
             Audio = gameObject.AddComponent<AudioManager>().Initialize();
 
