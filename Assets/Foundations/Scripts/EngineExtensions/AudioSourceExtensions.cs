@@ -9,13 +9,10 @@ namespace Elysia
     {
         public static void PlayOneShot(this AudioSource audioSource, string key, float volumeScale = 1f)
         {
-            Addressables.LoadAssetAsync<AudioClip>(key).Completed += handle =>
+            Game.Audio.GetClipAsync(key, clip =>
             {
-                AudioClip clip = handle.Result;
                 audioSource.PlayOneShot(clip, volumeScale);
-
-                Addressables.Release(handle);
-            };
+            });
         }
     }
 }

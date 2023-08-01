@@ -21,7 +21,7 @@ namespace Elysia
             }
 
             _instance = this;
-            Addressables.InitializeAsync(gameObject);
+            Addressables.InitializeAsync();
 
             Audio = gameObject.AddComponent<AudioManager>().Initialize();
 
