@@ -141,7 +141,7 @@ namespace Elysia.UI
             Type t = typeof(T);
             if (!_cachedUIs.TryGetValue(t, out IObjectPool<UIBase> pool))
             {
-                pool = new ObjectPool<UIBase>(_windowContainer, CreateUI<T>, null, false, 0, 4);
+                pool = new ObjectPool<UIBase>(_windowContainer, CreateUI<T>, false, 0, 4);
                 _cachedUIs.Add(t, pool);
             }
 

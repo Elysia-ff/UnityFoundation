@@ -16,7 +16,6 @@ namespace Elysia.Scenes
 
             _pool = new ObjectPool<SomeObject>(transform,
                 () => new GameObject(nameof(SomeObject)).AddComponent<SomeObject>(),
-                (t) => Debug.Log("take"),
                 worldPositionStays: false,
                 defaultInstantiateCount: 3,
                 defaultCapacity: 16,

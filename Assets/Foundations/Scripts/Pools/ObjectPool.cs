@@ -17,16 +17,14 @@ namespace Elysia.Pools
         private readonly Transform _inactiveParent;
 
         private OnCreateNewEvent _onCreateNew;
-        private OnTakeFromPoolEvent _onTakeFromPool;
         private bool _worldPositionStays;
 
-        public ObjectPool(Transform parent, OnCreateNewEvent onCreateNew, OnTakeFromPoolEvent onTakeFromPool, bool worldPositionStays, int defaultInstantiateCount, int defaultCapacity, int maxSize = 10000)
+        public ObjectPool(Transform parent, OnCreateNewEvent onCreateNew, bool worldPositionStays, int defaultInstantiateCount, int defaultCapacity, int maxSize = 10000)
         {
             Debug.Assert(parent != null);
             Debug.Assert(defaultInstantiateCount <= defaultCapacity, $"Re-allocating will occur; Set {nameof(defaultCapacity)} bigger than {nameof(defaultInstantiateCount)}");
 
             _onCreateNew = onCreateNew;
-            _onTakeFromPool = onTakeFromPool;
             _worldPositionStays = worldPositionStays;
 
             _pool = new UnityEngine.Pool.ObjectPool<T>(OnCreateItem, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, false, defaultCapacity, maxSize);
@@ -78,8 +76,6 @@ namespace Elysia.Pools
         private void OnTakeFromPool(T item)
         {
             item.transform.SetParent(_parent, _worldPositionStays);
-
-            _onTakeFromPool?.Invoke(item);
         }
 
         private void OnReturnedToPool(T item)
