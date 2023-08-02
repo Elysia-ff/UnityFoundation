@@ -36,6 +36,7 @@ namespace Elysia.UI
         public UIManager Initialize()
         {
             Camera = transform.Find("Camera").GetComponent<Camera>();
+            Camera.cullingMask = LayerMask.GetMask("UI", "UI Move");
 
             _windowContainer = (RectTransform)transform.Find("WindowCanvas/Container");
             _windowCanvasGroup = _windowContainer.GetComponent<CanvasGroup>();
