@@ -1,7 +1,3 @@
-/// <remarks>
-/// Not tested yet!
-/// </remarks>
-
 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +12,7 @@ namespace Elysia.Inputs
         private bool GetMouseButtonDown(int button)
         {
             Debug.Assert(button >= 0);
-            if (Input.touchCount < button)
+            if (Input.touchCount <= button)
             {
                 return false;
             }
@@ -28,7 +24,7 @@ namespace Elysia.Inputs
         private bool GetMouseButton(int button)
         {
             Debug.Assert(button >= 0);
-            if (Input.touchCount < button)
+            if (Input.touchCount <= button)
             {
                 lastDownedTouchID = -1;
                 return false;

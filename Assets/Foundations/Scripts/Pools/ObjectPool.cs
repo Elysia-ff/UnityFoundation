@@ -9,15 +9,14 @@ namespace Elysia.Pools
         where T : MonoBehaviour
     {
         public delegate T OnCreateNewEvent();
-        public delegate void OnTakeFromPoolEvent(T item);
 
         private readonly UnityEngine.Pool.IObjectPool<T> _pool;
 
         private readonly Transform _parent;
         private readonly Transform _inactiveParent;
 
-        private OnCreateNewEvent _onCreateNew;
-        private bool _worldPositionStays;
+        private readonly OnCreateNewEvent _onCreateNew;
+        private readonly bool _worldPositionStays;
 
         public ObjectPool(Transform parent, OnCreateNewEvent onCreateNew, bool worldPositionStays, int defaultInstantiateCount, int defaultCapacity, int maxSize = 10000)
         {

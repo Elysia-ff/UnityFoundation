@@ -11,7 +11,7 @@ namespace Elysia.StateMachines
         private StateBase<T, TData> _state;
         public T State => _state.State;
 
-        public readonly Dictionary<T, StateBase<T, TData>> _states = new Dictionary<T, StateBase<T, TData>>();
+        private readonly Dictionary<T, StateBase<T, TData>> _states = new Dictionary<T, StateBase<T, TData>>();
 
         public StateMachine<T, TData> AddState<TState>(TData data)
             where TState : StateBase<T, TData>, new()
@@ -39,21 +39,12 @@ namespace Elysia.StateMachines
 
         public void Update(float deltaTime)
         {
-            if (_state == null)
-            {
-                return;
-            }
-
-            _state.OnUpdate(deltaTime);
+            _state?.OnUpdate(deltaTime);
         }
 
         public void Stop()
         {
-            if (_state != null)
-            {
-                _state.OnEnd((-1).ToEnum<int, T>());
-            }
-
+            _state?.OnEnd((-1).ToEnum<int, T>());
             _state = null;
         }
     }

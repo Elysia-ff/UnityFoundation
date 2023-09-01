@@ -6,6 +6,7 @@ using UnityEngine;
 namespace Elysia
 {
     public class PriorityQueue<T>
+        where T : IEquatable<T>
     {
         /// <summary>
         /// lhs < rhs == ascending
@@ -16,6 +17,7 @@ namespace Elysia
         private readonly Comparer _comparer;
 
         public int Count { get; private set; }
+        public int Capacity => _list.Length;
 
         public PriorityQueue(int capacity, Comparer comparer)
         {
@@ -37,19 +39,7 @@ namespace Elysia
 
             _list[Count] = item;
 
-            int current = Count;
-            while (current > 0)
-            {
-                int next = GetParent(current);
-                if (_comparer(_list[next], _list[current]))
-                {
-                    break;
-                }
-
-                (_list[current], _list[next]) = (_list[next], _list[current]);
-
-                current = next;
-            }
+            SortUp(Count);
 
             Count++;
         }
@@ -62,7 +52,83 @@ namespace Elysia
             _list[0] = _list[Count];
             _list[Count] = default;
 
-            int current = 0;
+            SortDown(0);
+
+            return item;
+        }
+
+        public bool TryDequeue(out T outItem)
+        {
+            if (Count == 0)
+            {
+                outItem = default;
+                return false;
+            }
+
+            outItem = Dequeue();
+            return true;
+        }
+
+        public int IndexOf(T item)
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (item.Equals(_list[i]))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public bool Contains(T item)
+        {
+            return IndexOf(item) != -1;
+        }
+
+        public void UpdateItem(int index)
+        {
+            SortUp(index);
+            SortDown(index);
+        }
+
+        public T Peek()
+        {
+            return _list[0];
+        }
+
+        private void GrowArray()
+        {
+            if (Count < _list.Length)
+            {
+                return;
+            }
+
+            T[] newList = new T[_list.Length * 2];
+            Array.Copy(_list, newList, _list.Length);
+
+            _list = newList;
+        }
+
+        private void SortUp(int current)
+        {
+            while (current > 0)
+            {
+                int next = GetParent(current);
+                if (_comparer(_list[next], _list[current]))
+                {
+                    break;
+                }
+
+                (_list[current], _list[next]) = (_list[next], _list[current]);
+
+                current = next;
+            }
+        }
+
+        private void SortDown(int current)
+        {
             while (true)
             {
                 int candidate = current;
@@ -88,51 +154,6 @@ namespace Elysia
 
                 current = candidate;
             }
-
-            return item;
-        }
-
-        public bool TryDequeue(out T outItem)
-        {
-            if (Count == 0)
-            {
-                outItem = default;
-                return false;
-            }
-
-            outItem = Dequeue();
-            return true;
-        }
-
-        public bool Contains(Predicate<T> predicate)
-        {
-            for (int i = 0; i < Count; i++)
-            {
-                if (predicate(_list[i]))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public T Peek()
-        {
-            return _list[0];
-        }
-
-        private void GrowArray()
-        {
-            if (Count < _list.Length)
-            {
-                return;
-            }
-
-            T[] newList = new T[_list.Length * 2];
-            Array.Copy(_list, newList, _list.Length);
-
-            _list = newList;
         }
 
         private int GetLeftChild(int parent)

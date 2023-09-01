@@ -16,9 +16,9 @@ namespace Elysia.Inputs
             public readonly string axis;
             public OnAxisEvent events;
 
-            public AxisEventValue(string _axis)
+            public AxisEventValue(string axis)
             {
-                axis = _axis;
+                this.axis = axis;
             }
         }
 
@@ -30,9 +30,9 @@ namespace Elysia.Inputs
             public int tapCount;
             public OnKeyEvent[] events = new OnKeyEvent[(int)EInputType.Count];
 
-            public KeyEventValue(KeyCode _key)
+            public KeyEventValue(KeyCode key)
             {
-                key = _key;
+                this.key = key;
             }
         }
 
@@ -47,9 +47,9 @@ namespace Elysia.Inputs
             public Vector2 lastTapPosition;
             public OnMouseEvent[] events = new OnMouseEvent[(int)EInputType.Count];
 
-            public MouseEventValue(int _button)
+            public MouseEventValue(int button)
             {
-                button = _button;
+                this.button = button;
             }
         }
 

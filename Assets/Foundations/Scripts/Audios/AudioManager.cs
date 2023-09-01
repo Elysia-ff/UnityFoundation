@@ -14,10 +14,10 @@ namespace Elysia.Audios
             public readonly AudioMixerGroup mixerGroup;
             public readonly string volumeKey;
 
-            public MixerData(AudioMixerGroup _mixerGroup, string _volumeKey)
+            public MixerData(AudioMixerGroup mixerGroup, string volumeKey)
             {
-                mixerGroup = _mixerGroup;
-                volumeKey = _volumeKey;
+                this.mixerGroup = mixerGroup;
+                this.volumeKey = volumeKey;
             }
         }
 
@@ -88,23 +88,24 @@ namespace Elysia.Audios
             return this;
         }
 
-        public void CreateAudioSource(string key, GameObject parent, EMixerType mixerType, bool loop, Action<AudioSource> onCompleted)
+        public void CreateAudioSource(string key, GameObject parent, EMixerType mixerType, bool loop, float volume, Action<AudioSource> onCompleted)
         {
             GetClipAsync(key, clip =>
             {
-                AudioSource audioSource = CreateAudioSource(clip, parent, mixerType, loop);
+                AudioSource audioSource = CreateAudioSource(clip, parent, mixerType, loop, volume);
 
                 onCompleted?.Invoke(audioSource);
             });
         }
 
-        public AudioSource CreateAudioSource(AudioClip clip, GameObject parent, EMixerType mixerType, bool loop)
+        public AudioSource CreateAudioSource(AudioClip clip, GameObject parent, EMixerType mixerType, bool loop, float volume)
         {
             AudioSource audioSource = parent.AddComponent<AudioSource>();
             audioSource.clip = clip;
             audioSource.outputAudioMixerGroup = _mixerGroups[mixerType].mixerGroup;
             audioSource.playOnAwake = false;
             audioSource.loop = loop;
+            audioSource.volume = volume;
 
             return audioSource;
         }
@@ -122,7 +123,7 @@ namespace Elysia.Audios
                 AudioClip clip = handle.Result;
                 _cachedClips.TryAdd(key, clip);
 
-                Addressables.Release(handle);
+                onCompleted(clip);
             };
         }
 

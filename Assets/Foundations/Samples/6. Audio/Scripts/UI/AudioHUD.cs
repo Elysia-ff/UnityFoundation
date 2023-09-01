@@ -54,7 +54,7 @@ namespace Elysia.UI
                 Destroy(_audioSource);
             }
 
-            Game.Audio.CreateAudioSource("Audios/Clips/Cloudy by Ikson.mp3", gameObject, EMixerType.BGM, true, (audioSource) =>
+            Game.Audio.CreateAudioSource("Audios/Clips/Cloudy by Ikson.mp3", gameObject, EMixerType.BGM, true, 1f, (audioSource) =>
             {
                 _audioSource = audioSource;
                 _audioSource.Play();
@@ -68,7 +68,7 @@ namespace Elysia.UI
                 Destroy(_audioSource);
             }
 
-            Game.Audio.CreateAudioSource("Audios/Clips/Cloudy by Ikson.mp3", gameObject, EMixerType.SFX, false, (audioSource) =>
+            Game.Audio.CreateAudioSource("Audios/Clips/Cloudy by Ikson.mp3", gameObject, EMixerType.SFX, false, 1f, (audioSource) =>
             {
                 _audioSource = audioSource;
                 _audioSource.Play();

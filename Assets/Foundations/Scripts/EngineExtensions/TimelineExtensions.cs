@@ -14,14 +14,12 @@ namespace Elysia
         {
             public delegate void BuilderDelegate(TrackAsset trackAsset);
 
-            private readonly PlayableDirector _director;
             private readonly TimelineAsset _timelineAsset;
             private readonly Dictionary<string, BuilderDelegate> _methods = new Dictionary<string, BuilderDelegate>();
 
             public Builder(PlayableDirector director)
             {
-                _director = director;
-                _timelineAsset = (TimelineAsset)_director.playableAsset;
+                _timelineAsset = (TimelineAsset)director.playableAsset;
             }
 
             public Builder AddMethod(string key, BuilderDelegate method)

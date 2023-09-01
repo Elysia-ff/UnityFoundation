@@ -2,6 +2,7 @@ using Elysia.Inputs;
 using Elysia.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Elysia.VFX;
 using UnityEngine;
 
 namespace Elysia.Scenes
@@ -12,6 +13,7 @@ namespace Elysia.Scenes
 
         public InputManager Input { get; private set; }
         public UIManager UI { get; private set; }
+        public VFXManager VFX { get; private set; }
 
         public override void Initialize(int handle)
         {
@@ -21,6 +23,8 @@ namespace Elysia.Scenes
 
             Input = gameObject.AddComponent<InputManager>();
             UI = FindObjectOfType<UIManager>().Initialize();
+            VFX = gameObject.AddComponent<VFXManager>();
+            VFX.Initialize();
         }
     }
 }

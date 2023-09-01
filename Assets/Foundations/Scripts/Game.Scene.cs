@@ -156,8 +156,6 @@ namespace Elysia
             }
 
             handle.Result.ActivateAsync();
-
-            Addressables.Release(handle);
         }
 
         private static IEnumerator UnloadSceneAsyncRoutine(Scene scene, IHasLoadingBar receiver)
