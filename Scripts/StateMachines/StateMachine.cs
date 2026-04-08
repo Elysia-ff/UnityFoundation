@@ -1,0 +1,56 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Elysia.StateMachines
+{
+    public class StateMachine<T, TData> : IStateMachine<T>
+        where T : unmanaged, Enum
+    {
+        private StateBase<T, TData> _state;
+        public T State => _state.State;
+
+        private readonly Dictionary<T, StateBase<T, TData>> _states = new Dictionary<T, StateBase<T, TData>>();
+
+        public StateMachine<T, TData> AddState<TState>(TData data)
+            where TState : StateBase<T, TData>, new()
+        {
+            StateBase<T, TData> newState = new TState();
+            newState.Initialize(this, data);
+
+            _states.Add(newState.State, newState);
+
+            return this;
+        }
+
+        public void Transit(T stateType)
+        {
+            T prevState = (-1).ToEnum<int, T>();
+            if (_state != null)
+            {
+                prevState = _state.State;
+                _state.OnEnd(stateType);
+            }
+
+            _state = _states[stateType];
+            _state.OnStart(prevState);
+        }
+
+        public void Update(float deltaTime)
+        {
+            _state?.OnUpdate(deltaTime);
+        }
+
+        public void FixedUpdate()
+        {
+            _state?.OnFixedUpdate();
+        }
+
+        public void Stop()
+        {
+            _state?.OnEnd((-1).ToEnum<int, T>());
+            _state = null;
+        }
+    }
+}

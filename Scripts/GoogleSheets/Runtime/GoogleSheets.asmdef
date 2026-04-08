@@ -1,0 +1,18 @@
+{
+    "name": "GoogleSheets",
+    "rootNamespace": "",
+    "references": [
+        "GUID:436cdec9a286f364bbfa0a6cc5c128f4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "!LIVE_BUILD"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
